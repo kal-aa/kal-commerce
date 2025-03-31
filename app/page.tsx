@@ -1,10 +1,10 @@
-import MainLogic from "@/components/MainLogic";
 import Testimonial from "@/components/Testimonial";
+import MainLogic from "@/components/MainLogic";
 
-export default async function HomePage() {
+export default function HomePage() {
   return (
     <div className="min-h-[55vh] mt-28">
-      <MainLogic isAddOrdersPage={false} />
+      <MainLogic isAddOrdersPage={false} query="" />
       <Testimonial />
     </div>
   );

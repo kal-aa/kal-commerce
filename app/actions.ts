@@ -2,6 +2,7 @@
 
 import { mongoDb } from "./utils/mongodb";
 import { auth } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 
 export async function searchAction(formData: FormData) {
@@ -35,6 +36,7 @@ export async function submitProductAction(formData: FormData) {
       }
     );
 
+    revalidatePath("/your-orders");
     return { success: true, message: "Order quantity updated" };
   }
 
@@ -69,12 +71,29 @@ export async function submitProductAction(formData: FormData) {
   }
 }
 
-export async function removeOrderAction(formData: FormData) {
-  const action = formData.get("action");
+export async function removeOrderAction(id: string, action: string) {
+  const db = await mongoDb();
 
+  const orderId = new ObjectId(id);
   if (action === "removeOne") {
-    console.log("removed one");
+    const remove1Result = await db.collection("orders").updateOne(
+      { _id: orderId },
+      {
+        $set: { updatedAt: new Date() },
+        $inc: { selectedQuantity: -1 },
+      }
+    );
+    if (remove1Result.modifiedCount === 0)
+      throw new Error("Failed to remove 1 product from cart");
+    revalidatePath("/your-orders");
+    return;
   } else if (action === "removeAll") {
-    console.log("removed all");
+    const removeAllResult = await db
+      .collection("orders")
+      .deleteOne({ _id: orderId });
+    if (removeAllResult.deletedCount === 0)
+      throw new Error("Failed to remove product from cart");
+    revalidatePath("/your-orders");
+    return;
   }
 }

@@ -24,3 +24,4 @@ export async function mongoDb() {
     throw new Error("Database connection failed");
   }
 }
+

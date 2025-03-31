@@ -22,8 +22,8 @@ export interface ProductsFormProps {
 export interface Product {
   id: number;
   price: number;
-  for: string; // Assuming the values are either "men" or "women"
-  type: string; // You can make this more specific if you know all possible types
+  for: string;
+  type: string;
   color: {
     black: string;
     electricBlue: string;
@@ -58,7 +58,7 @@ export interface OrderAlongWithProduct {
   selectedSize: string;
   selectedQuantity: number;
   status: string;
-  createdAt: string;
+  updatedAt: Date;
 }
 
 // MainGenerate Props interface

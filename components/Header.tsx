@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
 import { Navlink } from "@/app/types";
-import { useAuth } from "@clerk/nextjs";
+import { SignedIn, useAuth, UserButton } from "@clerk/nextjs";
 import useSWR from "swr";
 
 const countFetcher = async (url: string) => {
@@ -15,11 +15,7 @@ const countFetcher = async (url: string) => {
   return res.json();
 };
 
-export default function Header({
-  NavMiddleSection,
-}: {
-  NavMiddleSection: React.ReactNode;
-}) {
+export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
   const [isElipsisClicked, setIsElipsisClicked] = useState(false);
   const [showMiddleSection, setShowMiddleSection] = useState(false);
   const { isLoaded, userId } = useAuth();
@@ -29,15 +25,16 @@ export default function Header({
   // Don't forget to revalidate /api/order-count on the server after successful order submission
   // use {mutate} = useSWRConfig on the /api/order-count on the client after success
   const { data } = useSWR("/api/order-count", countFetcher);
+  const memorizedData = useMemo(() => data, [data]);
 
   const pathname = usePathname();
   const isYourOrdersPage = pathname.includes("/your-orders");
   useEffect(() => {
-    setShowMiddleSection([`/home/`, `/add-orders`].includes(pathname));
+    setShowMiddleSection([`/`, `/add-orders`].includes(pathname));
   }, [pathname, userId]);
 
   const leftNav: Navlink[] = [
-    { name: "Home", href: `/home` },
+    { name: "Home", href: `/` },
     { name: "Add Orders", href: `/add-orders` },
     { name: "Your Orders", href: `/your-orders` },
   ];
@@ -62,7 +59,7 @@ export default function Header({
       {/* Lef section of the header */}
       <div className="flex items-center ml-1">
         <div className="relative">
-          <Link href={`/home`}>
+          <Link href="/">
             <Image
               width={100}
               height={0}
@@ -71,16 +68,19 @@ export default function Header({
               className="sm:w-20 w-16  h-10 rounded-full"
             />
           </Link>
-          {!isElipsisClicked && data?.count > 0 && !isYourOrdersPage && (
-            <Link
-              href="/your-orders"
-              className={`count-orders -left-4 sm:hidden ${
-                !isYourOrdersPage && "animate-bounce hover:animate-none"
-              }`}
-            >
-              {data.count}
-            </Link>
-          )}
+          {!isElipsisClicked &&
+            memorizedData?.count > 0 &&
+            !isYourOrdersPage &&
+            isAuthorized && (
+              <Link
+                href="/your-orders"
+                className={`count-orders -left-4 sm:hidden ${
+                  !isYourOrdersPage && "animate-bounce hover:animate-none"
+                }`}
+              >
+                {memorizedData?.count}
+              </Link>
+            )}
         </div>
         {isAuthorized && (
           <FaEllipsisV
@@ -112,10 +112,11 @@ export default function Header({
                     {link.name}
                   </Link>
                   {link.name === "Your Orders" &&
-                    data?.count > 0 &&
-                    !isYourOrdersPage && (
-                      <span className="count-orders -right-4">
-                        {data?.count}
+                    memorizedData?.count > 0 &&
+                    !isYourOrdersPage &&
+                    isAuthorized && (
+                      <span className="count-orders -right-3">
+                        {memorizedData?.count}
                       </span>
                     )}
                 </div>
@@ -126,10 +127,10 @@ export default function Header({
       </div>
 
       {/* Middle section of the header */}
-      {isAuthorized ? showMiddleSection && <>{NavMiddleSection}</> : ""}
+      {isAuthorized ? showMiddleSection && <>{SearchBar}</> : ""}
 
       {/* Right section of the header */}
-      <div>
+      <div className="flex items-center justify-center sm:flex-col-reverse md:flex-row">
         <nav
           className={`flex items-center justify-center text-center pr-2 ${
             showMiddleSection
@@ -156,6 +157,14 @@ export default function Header({
             );
           })}
         </nav>
+        <SignedIn>
+          <div className="sm:scale-110 md:scale-125">
+            <UserButton
+              userProfileMode="navigation"
+              userProfileUrl="/manage-your-account"
+            />
+          </div>
+        </SignedIn>
       </div>
     </header>
   );
