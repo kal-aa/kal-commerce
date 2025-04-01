@@ -39,18 +39,21 @@ export const ImageSlider = ({
     !isAddOrdersPage && (
       <div className="max-w-[250px] md:max-w-[300px] mx-auto">
         <Slider {...settings}>
-          {images.map((image, index) => (
-            <Link href={image} key={index}>
-              <Image
-                height={200}
-                width={300}
-                src={image}
-                alt={image.split("/")[4]}
-                className="max-w-[250px] md:max-w-[300px] max-h-[250px] rounded-3xl object-cover"
-                priority
-              />
-            </Link>
-          ))}
+          {images.map((image, index) => {
+            const directUrl = image.split("/").slice(2, 5).join("/");
+            return (
+              <Link key={index} href={`/images?imgUrl=${directUrl}`}>
+                <Image
+                  height={200}
+                  width={300}
+                  src={image}
+                  alt={image.split("/")[4]}
+                  className="max-w-[250px] md:max-w-[300px] max-h-[250px] rounded-3xl object-cover"
+                  priority
+                />
+              </Link>
+            );
+          })}
         </Slider>
       </div>
     )

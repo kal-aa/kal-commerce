@@ -6,6 +6,7 @@ import { useOptimistic } from "react";
 import OrdersForm from "./OrdersForm";
 import { round } from "@/app/utils/reuses";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function YourOrdersGenerate({
   orders,
@@ -32,37 +33,40 @@ export default function YourOrdersGenerate({
     await removeOrderAction(orderId, action);
   };
 
-  return optimisticOrders.map((order) => (
-    <section key={order.id} className="flex max-h-[250px] h-full">
-      <div className="order-details">
-        <div className="border w-[90%] text-center">
-          {order.for + " " + order.type}
-        </div>
-        <div className="border w-[80%] text-center">{order.selectedColor}</div>
-        <div className="border w-[70%] text-center">{order.selectedSize}</div>
-        <div className="flex justify-center space-x-2 border w-[80%]">
-          <select>
-            <option>{order.selectedQuantity}</option>
-          </select>
-          <div>${round(order.selectedQuantity * order.price)}</div>
-        </div>
-        <div className="border w-[90%] text-center">{order.status}</div>
-        {/* Orders form */}
-        <OrdersForm removeOrder={removeOrder} order={order} />
-      </div>
+  return optimisticOrders.map((order) => {
+    const imgPath = `${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`;
 
-      <Image
-        width={300}
-        height={0}
-        src={`/images/${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`}
-        alt=""
-        className="w-full max-w-[250px] sm:max-w-[150px] -ml-1 cursor-pointer object-cover"
-        onClick={() =>
-          window.open(
-            `/images/${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`
-          )
-        }
-      />
-    </section>
-  ));
+    return (
+      <section key={order.id} className="flex max-h-[250px] h-full">
+        <div className="order-details">
+          <div className="border w-[90%] text-center">
+            {order.for + " " + order.type}
+          </div>
+          <div className="border w-[80%] text-center">
+            {order.selectedColor}
+          </div>
+          <div className="border w-[70%] text-center">{order.selectedSize}</div>
+          <div className="flex justify-center space-x-2 border w-[80%]">
+            <select>
+              <option>{order.selectedQuantity}</option>
+            </select>
+            <div>${round(order.selectedQuantity * order.price)}</div>
+          </div>
+          <div className="border w-[90%] text-center">{order.status}</div>
+          {/* Orders form */}
+          <OrdersForm removeOrder={removeOrder} order={order} />
+        </div>
+
+        <Link href={`/images?imgUrl=${imgPath}`} legacyBehavior>
+          <Image
+            width={300}
+            height={0}
+            src={`/images/${imgPath}`}
+            alt=""
+            className="w-full max-w-[250px] sm:max-w-[150px] -ml-1 cursor-pointer object-cover"
+          />
+        </Link>
+      </section>
+    );
+  });
 }

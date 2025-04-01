@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+body {
+  @apply bg-white text-black dark:bg-black dark:text-white;
+}
+
+.modal-container {
+  @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
 .header-container {
   @apply fixed bg-blue-200 top-0 left-0 right-0 h-24 flex justify-around items-center text-sm md:text-base font-bold z-20 dark:bg-black dark:border-b rounded-b-xl border-white/40;
 }
@@ -9,7 +17,7 @@
 }
 
 .footer-container {
-  @apply bg-blue-300 h-[135px] mt-5 font-serif dark:bg-black border-t border-white/20;
+  @apply bg-blue-300 h-[160px] mt-5 font-serif dark:bg-black border-t border-white/20;
 }
 
 .footer-links {
@@ -52,7 +60,7 @@
 }
 
 .query-remove-icon {
-  @apply absolute top-[6px] md:top-[9px] left-0.5 text-2xl rounded-full cursor-pointer z-10 text-black/60 hover:text-gray-700 hover:dark:text-gray-200 dark:text-white/70;
+  @apply absolute top-[5px] md:top-[7px] left-0.5 text-2xl rounded-full cursor-pointer z-10 text-black/60 hover:text-gray-700 hover:dark:text-gray-200 dark:text-white/70;
 }
 
 .search-input {
@@ -60,5 +68,5 @@
 }
 
 .search-btn {
-  @apply bg-gray-200 -ml-1 py-2 pl-3 pr-4 md:pl-5 md:pr-6 rounded-r-xl cursor-pointer z-0
+  @apply bg-gray-200 -ml-1 py-2 pl-3 pr-4 md:pl-5 md:pr-6 rounded-r-xl cursor-pointer z-0;
 }

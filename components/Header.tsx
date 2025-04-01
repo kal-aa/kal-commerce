@@ -63,7 +63,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
             <Image
               width={100}
               height={0}
-              src="/images/cart.jpeg"
+              src="/images/others/cart.jpeg"
               alt="cart.jpeg"
               className="sm:w-20 w-16  h-10 rounded-full"
             />
@@ -107,7 +107,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
                       isActive
                         ? "bg-blue-300 dark:bg-yellow-500/50"
                         : "hover:bg-blue-300 dark:hover:bg-yellow-500/20"
-                    }`}
+                    } ${link.name === "Your Orders" && "mr-3"}`}
                   >
                     {link.name}
                   </Link>
@@ -115,7 +115,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
                     memorizedData?.count > 0 &&
                     !isYourOrdersPage &&
                     isAuthorized && (
-                      <span className="count-orders -right-3">
+                      <span className="count-orders right-0.5">
                         {memorizedData?.count}
                       </span>
                     )}

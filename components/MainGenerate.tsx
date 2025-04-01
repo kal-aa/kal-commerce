@@ -88,7 +88,7 @@ export default function MainGenerate({
             className="grid grid-cols-2 border rounded-3xl relative"
           >
             <Link
-              href={`/images/${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
+              href={`/images?imgUrl=${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
             >
               <Image
                 width={400}

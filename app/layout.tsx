@@ -13,15 +13,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode | null;
 }>) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="bg-white text-black dark:bg-black dark:text-white">
+        <body>
           <Header SearchBar={<SearchBar />} />
           <div className="min-h-[55vh] mt-28">{children}</div>
+          <div className="modal-container">{modal}</div>
           <ToastNotification />
           <Footer />
         </body>

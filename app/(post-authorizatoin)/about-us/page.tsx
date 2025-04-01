@@ -34,11 +34,11 @@ export default async function AboutUsPage() {
         <h2 className={`${headingStyle} text-center`}>Meet Our Team</h2>
         <div className="flex flex-col gap-y-5 sm:flex-row sm:gap-x-10">
           <div className="flex flex-col items-center">
-            <Link href="/images/kalab.jpg">
+            <Link href="/images?imgUrl=others/kalab.jpg">
               <Image
                 width={100}
                 height={0}
-                src="/images/kalab.jpg"
+                src="/images/others/kalab.jpg"
                 alt="kalab CEO"
                 className="rounded-full w-24 "
               />
@@ -47,11 +47,11 @@ export default async function AboutUsPage() {
             <p>CEO</p>
           </div>
           <div className="flex flex-col items-center">
-            <Link href="/images/khalid.jpg">
+            <Link href="/images?imgUrl=others/khalid.jpg">
               <Image
                 width={100}
                 height={0}
-                src="/images/khalid.jpg"
+                src="/images/others/khalid.jpg"
                 alt="khalid CTO"
                 className="rounded-full w-24 "
               />
