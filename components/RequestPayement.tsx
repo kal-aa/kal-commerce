@@ -54,7 +54,7 @@ export default function RequestPayement({
         >
           Request Payement
         </button>
-        <div className="absolute -top-[180px] right-9 hidden group-hover:block text-red-400">
+        <div className="absolute -top-[180px] right-9 hidden group-hover:block text-red-400 text-center">
           Sorry, we&apos;re not receiving orders right now
         </div>
       </Form>

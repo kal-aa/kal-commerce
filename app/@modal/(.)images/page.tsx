@@ -28,14 +28,13 @@ export default function ImagePageIntercept() {
           height={0}
           src={`/images/${imgUrl}`}
           alt={alt}
-          // className="rounded-2xl ring-8 ring-amber-500/20"
           className="w-full h-auto transition-transform duration-3000 rounded-xl"
         />
       </div>
       <TiDelete
         onClick={() => router.back()}
         className={`absolute ${
-          zoom ? "-right-[78px] text-4xl" : "-right-10  text-3xl"
+          zoom ? "-right-[78px] text-4xl" : "-right-8  text-3xl"
         } cursor-pointer text-black/60 hover:text-gray-700 hover:dark:text-gray-200 dark:text-white/70 transform animate-spin duration-[1s] hover:animate-none`}
       />
     </div>

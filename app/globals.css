@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --font-playfair: var(--font-playfair);
+}
+
 body {
+  font-family: var(--font-playfair), serif;
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
 
@@ -58,6 +63,10 @@ input {
   @apply flex flex-col space-y-2 items-center justify-center font-bold text-sm w-full bg-yellow-300 dark:bg-yellow-500/90 rounded-s-xl capitalize text-black py-2;
 }
 
+.order-details-child {
+  @apply border rounded-xl w-[90%] py-1 hover:border-black/60;
+}
+
 .remove-order-btn {
   @apply bg-blue-600 rounded-md px-2 py-1 text-white text-xs font-thin hover:bg-blue-700;
 }
@@ -71,7 +80,7 @@ input {
 }
 
 .search-input {
-  @apply outline-none border-2 w-full px-2 py-1.5 -mr-1 rounded-l-lg border-black/20 dark:border-white hover:animate-pulse;
+  @apply outline-none border-2 w-full px-2 py-1.5 -mr-1 rounded-l-lg border-black/20 dark:border-white hover:animate-pulse focus:animate-none;
 }
 
 .search-btn {

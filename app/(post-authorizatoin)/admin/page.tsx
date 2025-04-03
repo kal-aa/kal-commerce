@@ -17,7 +17,7 @@ export default async function AdminPage() {
       {users.map((user) => (
         <div
           key={user.id}
-          className={`flex items-center justify-between md:px-[5%] gap-4 p-4 text-white ${
+          className={`flex flex-col-reverse sm:flex-row sm:items-center justify-between md:px-[5%] gap-4 p-4 text-white ${
             users.indexOf(user) % 2 === 0
               ? "bgneutral-50 bg-neutral-600"
               : "bg-whit bg-neutral-800 dark:bg-neutral-900"
@@ -38,34 +38,36 @@ export default async function AdminPage() {
               }
             </div>
 
-            <div className="dark:text-200 capitalize">
+            <div className="dark:text-200 uppercase">
               {filterMainUser?.id !== user.id
                 ? (user.publicMetadata?.role as string)
                 : ""}
             </div>
           </div>
 
-          {filterMainUser?.id === user.id ? (
-            <p className="mr-3">Main Admin</p>
-          ) : (
-            <div className="flex flex-col md:flex-row gap-2">
-              {user.publicMetadata.role !== "admin" ? (
-                <form action={setRole} className="inline">
-                  <input type="hidden" value={user.id} name="id" />
-                  <button type="submit" className="make-admin-btns">
-                    Make Admin
-                  </button>
-                </form>
-              ) : (
-                <form action={removeRole} className="inline">
-                  <input type="hidden" value={user.id} name="id" />
-                  <button type="submit" className="make-admin-btns">
-                    Remove Admin
-                  </button>
-                </form>
-              )}
-            </div>
-          )}
+          <div>
+            {filterMainUser?.id === user.id ? (
+              <span className="mr-2">Main Admin</span>
+            ) : (
+              <span className="flex flex-col md:flex-row gap-2">
+                {user.publicMetadata.role !== "admin" ? (
+                  <form action={setRole} className="inline">
+                    <input type="hidden" value={user.id} name="id" />
+                    <button type="submit" className="make-admin-btns">
+                      Make Admin
+                    </button>
+                  </form>
+                ) : (
+                  <form action={removeRole} className="inline">
+                    <input type="hidden" value={user.id} name="id" />
+                    <button type="submit" className="make-admin-btns">
+                      Remove Admin
+                    </button>
+                  </form>
+                )}
+              </span>
+            )}
+          </div>
         </div>
       ))}
     </div>

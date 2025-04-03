@@ -22,7 +22,7 @@ export default async function YourOrdersPage() {
             if (!product) return null;
 
             const { color, ...restOfProduct } = product;
-            color.black = "";
+            color.black = "black";
             return {
               id: o._id.toString(),
               userId: o.userId,
@@ -46,8 +46,10 @@ export default async function YourOrdersPage() {
         3-7 business days depending on your location. You’ll receive a
         confirmation email with your estimated delivery date once your order is
         shipped. For orders over $250, shipping is{" "}
-        <span className="text-black dark:text-yellow-400">FREE</span> unless it
-        constitutes 10% (0.1) of the total order value.
+        <span className="text-black dark:text-yellow-400/90 font-serif">
+          FREE
+        </span>{" "}
+        unless it constitutes 10% (0.1) of the total order value.
       </div>
 
       {/* Request payement section */}

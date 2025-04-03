@@ -8,6 +8,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import { Navlink } from "@/app/types/types";
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import useSWR from "swr";
+import SearchBar from "./SearchBar";
 
 const countFetcher = async (url: string) => {
   const res = await fetch(url);
@@ -15,7 +16,7 @@ const countFetcher = async (url: string) => {
   return res.json();
 };
 
-export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
+export default function Header() {
   const [isElipsisClicked, setIsElipsisClicked] = useState(false);
   const [showMiddleSection, setShowMiddleSection] = useState(false);
   const { user, isLoaded } = useUser();
@@ -36,8 +37,8 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
   const isAdmin = user?.publicMetadata?.role === "admin";
   const leftNav: Navlink[] = [
     { name: "Home", href: `/` },
-    { name: "Add Orders", href: `/add-orders` },
-    { name: "Your Orders", href: `/your-orders` },
+    { name: "Shop", href: `/add-orders` },
+    { name: "Orders", href: `/your-orders` },
   ];
 
   let rightNav: Navlink[] = [
@@ -92,7 +93,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
             onClick={() => {
               setIsElipsisClicked((prev) => !prev);
             }}
-            className="h-5 mr-2 text-yellow-800 hover:text-yellow-600 sm:hidden dark:text-yellow-700 cursor-pointer"
+            className="h-5 mx-2 text-yellow-800 hover:text-yellow-600 sm:hidden dark:text-yellow-700 cursor-pointer"
           />
         )}
         {isAuthorized && (
@@ -110,15 +111,15 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
                     href={link.href}
                     className={`header-links ${
                       isActive ? "ring-1" : "hover:rounded-none! hover:border-b"
-                    } ${link.name === "Your Orders" && "mr-3"}`}
+                    }`}
                   >
                     {link.name}
                   </Link>
-                  {link.name === "Your Orders" &&
+                  {link.name === "Orders" &&
                     memorizedData?.count > 0 &&
                     !isYourOrdersPage &&
                     isAuthorized && (
-                      <span className="count-orders right-0.5">
+                      <span className="count-orders rounded-sm! p-1! py-0! -right-4">
                         {memorizedData?.count}
                       </span>
                     )}
@@ -130,7 +131,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
       </div>
 
       {/* Middle section of the header */}
-      {isAuthorized ? showMiddleSection && <>{SearchBar}</> : ""}
+      {isAuthorized ? showMiddleSection && <SearchBar /> : ""}
 
       {/* Right section of the header */}
       <div

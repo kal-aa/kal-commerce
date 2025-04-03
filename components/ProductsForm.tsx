@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { ProductsFormProps } from "@/app/types/types";
 import { submitProductAction } from "@/app/actions";
 import { useSWRConfig } from "swr";
+import { ClockLoader } from "react-spinners";
 
 export default function ProductsForm({
   formHandlers,
@@ -20,7 +21,7 @@ export default function ProductsForm({
     handleSizeChange,
     handleQuantityChange,
   } = formHandlers;
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
   const [isPending, startTransition] = useTransition();
   const [optimisticId, setOptimisticId] = useOptimistic<number | null>(null);
   const { mutate } = useSWRConfig();
@@ -111,17 +112,25 @@ export default function ProductsForm({
             className={`submit-btn
                     ${
                       isPending || optimisticId === product.productId
-                        ? "cursor-progress"
+                        ? "cursor-progress!"
                         : "cursor-pointer"
                     }
                   `}
           >
-            {isPending || optimisticId === product.productId
-              ? "adding..."
-              : "Add"}
+            {isPending || optimisticId === product.productId ? (
+              <span>
+                adding{" "}
+                <ClockLoader size={25} color="lightgreen" speedMultiplier={5} />
+              </span>
+            ) : (
+              "Add"
+            )}
           </button>
         ) : (
-          <Link className="" href={!userId ? "/sign-up" : `/add-orders/`}>
+          <Link
+            className=""
+            href={!userId || !isLoaded ? "/sign-up" : `/add-orders/`}
+          >
             <button className="submit-btn cursor-pointer">Add</button>
           </Link>
         )}
