@@ -1,5 +1,5 @@
 import Form from "next/form";
-import { OrderAlongWithProduct } from "@/app/types";
+import { OrderAlongWithProduct } from "@/app/types/types";
 import { round } from "@/app/utils/reuses";
 
 export default function RequestPayement({
@@ -43,13 +43,20 @@ export default function RequestPayement({
         <p className="text-right">${round(total.totalPrice + shippingCost)}</p>
       </div>
 
-      <Form action={"/your-orders"} className="flex flex-col space-y-2">
+      <Form
+        action={"/your-orders"}
+        className="relative flex flex-col space-y-2 group"
+      >
         <button
+          disabled
           type="submit"
-          className="remove-order-btn py-3! rounded-none! text-base!"
+          className="remove-order-btn py-3! rounded-none! text-base! cursor-no-drop!"
         >
           Request Payement
         </button>
+        <div className="absolute -top-[180px] right-9 hidden group-hover:block text-red-400">
+          Sorry, we&apos;re not receiving orders right now
+        </div>
       </Form>
     </section>
   );

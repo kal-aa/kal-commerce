@@ -1,6 +1,6 @@
 import YourOrdersGenerate from "@/components/YourOrdersGenerate";
 import products from "../../data/products.json";
-import { OrderAlongWithProduct } from "@/app/types";
+import { OrderAlongWithProduct } from "@/app/types/types";
 import { mongoDb } from "@/app/utils/mongodb";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
@@ -16,20 +16,22 @@ export default async function YourOrdersPage() {
     ordersFromDb.length > 0
       ? ordersFromDb
           .map((o) => {
-            const product = products.products.find((p) => p.id === o.productId);
+            const product = products.products.find(
+              (p) => p.productId === o.productId
+            );
             if (!product) return null;
 
             const { color, ...restOfProduct } = product;
             color.black = "";
             return {
-              ...restOfProduct,
               id: o._id.toString(),
-              productId: o.productId,
+              userId: o.userId,
+              ...restOfProduct,
               selectedColor: o.selectedColor,
               selectedSize: o.selectedSize,
               selectedQuantity: o.selectedQuantity,
               status: o.status,
-              updatedAt: o.updatedAt,
+              createdAt: o.createdAt,
             };
           })
           .filter((order): order is OrderAlongWithProduct => order !== null)

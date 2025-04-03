@@ -4,20 +4,27 @@ body {
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
 
+button,
+a,
+select,
+input {
+  @apply cursor-pointer transition-all duration-200 ease-in-out;
+}
+
 .modal-container {
   @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
 
 .header-container {
-  @apply fixed bg-blue-200 top-0 left-0 right-0 h-24 flex justify-around items-center text-sm md:text-base font-bold z-20 dark:bg-black dark:border-b rounded-b-xl border-white/40;
+  @apply fixed bg-blue-200 top-0 left-0 right-0 h-24 flex justify-around items-center text-sm md:text-base font-bold dark:bg-black dark:border-b rounded-b-xl border-white/40 z-20;
 }
 
 .header-links {
-  @apply px-2 py-1 rounded-lg leading-4 dark:text-blue-200;
+  @apply px-2 py-0.5 rounded-lg leading-4 dark:text-blue-200;
 }
 
 .footer-container {
-  @apply bg-blue-300 h-[160px] mt-5 font-serif dark:bg-black border-t border-white/20;
+  @apply bg-blue-300 mt-5 font-serif dark:bg-black border-t border-white/20;
 }
 
 .footer-links {
@@ -33,10 +40,10 @@ body {
 }
 
 /* Image slider */
-.image-slider-container .slick-prev:before,
-.image-slider-container .slick-next:before {
-  color: black;
-  font-size: 22px;
+.slick-prev,
+.slick-next {
+  background-color: black !important;
+  border-radius: 20px !important;
 }
 
 .add-orders-header {
@@ -56,7 +63,7 @@ body {
 }
 
 .request-payement-container {
-  @apply rounded-l-2xl my-10 w-[70%] sm:w-[60%] md:w-[50%] lg:w-[40%] xl:w-[30%] ml-auto p-4 shadow-md shadow-white/30 dark:bg-white/10;
+  @apply rounded-l-2xl my-10 w-[70%] sm:w-[60%] md:w-[50%] lg:w-[40%] xl:w-[30%] ml-auto p-4 shadow-md dark:shadow-white/30 dark:bg-black/10;
 }
 
 .query-remove-icon {
@@ -64,9 +71,13 @@ body {
 }
 
 .search-input {
-  @apply outline-none border-2 w-full px-2 py-1.5 -mr-1 rounded-l-lg border-black/20 dark:border-white;
+  @apply outline-none border-2 w-full px-2 py-1.5 -mr-1 rounded-l-lg border-black/20 dark:border-white hover:animate-pulse;
 }
 
 .search-btn {
   @apply bg-gray-200 -ml-1 py-2 pl-3 pr-4 md:pl-5 md:pr-6 rounded-r-xl cursor-pointer z-0;
+}
+
+.make-admin-btns {
+  @apply px-2 py-1 text-sm border border-neutral-300 hover:scale-105 cursor-pointer;
 }

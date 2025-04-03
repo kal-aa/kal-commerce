@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
-import { Navlink } from "@/app/types";
-import { SignedIn, useAuth, UserButton } from "@clerk/nextjs";
+import { Navlink } from "@/app/types/types";
+import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import useSWR from "swr";
 
 const countFetcher = async (url: string) => {
@@ -18,31 +18,32 @@ const countFetcher = async (url: string) => {
 export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
   const [isElipsisClicked, setIsElipsisClicked] = useState(false);
   const [showMiddleSection, setShowMiddleSection] = useState(false);
-  const { isLoaded, userId } = useAuth();
-  const isAuthorized = isLoaded && userId;
+  const { user, isLoaded } = useUser();
+  const isAuthorized = isLoaded && user;
 
   // Get orders count
   // Don't forget to revalidate /api/order-count on the server after successful order submission
   // use {mutate} = useSWRConfig on the /api/order-count on the client after success
-  const { data } = useSWR("/api/order-count", countFetcher);
+  const { data } = useSWR(user?.id ? "/api/order-count" : null, countFetcher);
   const memorizedData = useMemo(() => data, [data]);
 
   const pathname = usePathname();
   const isYourOrdersPage = pathname.includes("/your-orders");
   useEffect(() => {
     setShowMiddleSection([`/`, `/add-orders`].includes(pathname));
-  }, [pathname, userId]);
+  }, [pathname]);
 
+  const isAdmin = user?.publicMetadata?.role === "admin";
   const leftNav: Navlink[] = [
     { name: "Home", href: `/` },
     { name: "Add Orders", href: `/add-orders` },
     { name: "Your Orders", href: `/your-orders` },
   ];
 
-  const rightNav: Navlink[] = [
+  let rightNav: Navlink[] = [
     {
-      name: isAuthorized ? "manage your acc" : "Go to Homepage",
-      href: isAuthorized ? `/manage-your-account` : "/",
+      name: isAuthorized ? "Admin" : "Go to Homepage",
+      href: isAuthorized ? `/admin` : "/",
     },
     {
       name: isAuthorized ? "About us" : "Get Started",
@@ -53,6 +54,10 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
       href: isAuthorized ? `/contact-us` : "/sign-in",
     },
   ];
+
+  if (isAuthorized && !isAdmin) {
+    rightNav = rightNav.slice(1);
+  }
 
   return (
     <header className="header-container">
@@ -87,12 +92,12 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
             onClick={() => {
               setIsElipsisClicked((prev) => !prev);
             }}
-            className="h-5 mr-2 text-yellow-800 hover:text-yellow-600 sm:hidden dark:text-yellow-700"
+            className="h-5 mr-2 text-yellow-800 hover:text-yellow-600 sm:hidden dark:text-yellow-700 cursor-pointer"
           />
         )}
         {isAuthorized && (
           <nav
-            className={`space-y-1 sm:flex sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-center sm:ml-2 ${
+            className={`space-y-2 sm:flex sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-center sm:ml-2 ${
               isElipsisClicked ? "flex flex-col" : "hidden"
             }`}
           >
@@ -104,9 +109,7 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
                   <Link
                     href={link.href}
                     className={`header-links ${
-                      isActive
-                        ? "bg-blue-300 dark:bg-yellow-500/50"
-                        : "hover:bg-blue-300 dark:hover:bg-yellow-500/20"
+                      isActive ? "ring-1" : "hover:rounded-none! hover:border-b"
                     } ${link.name === "Your Orders" && "mr-3"}`}
                   >
                     {link.name}
@@ -130,11 +133,17 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
       {isAuthorized ? showMiddleSection && <>{SearchBar}</> : ""}
 
       {/* Right section of the header */}
-      <div className="flex items-center justify-center sm:flex-col-reverse md:flex-row">
+      <div
+        className={`flex items-center justify-center ${
+          !isAdmin ? "sm:flex-col-reverse" : ""
+        } md:flex-row`}
+      >
         <nav
-          className={`flex items-center justify-center text-center pr-2 ${
+          className={`flex flex-col ${
+            !isAuthorized ? "md:flex-row md:space-y-0 space-x-4" : ""
+          } items-center justify-center text-center pr-2 ${
             showMiddleSection
-              ? "flex flex-col space-y-1"
+              ? "space-y-1"
               : "sm:flex-col space-x-1.5 sm:space-y-1.5"
           }`}
         >
@@ -147,16 +156,15 @@ export default function Header({ SearchBar }: { SearchBar: React.ReactNode }) {
                 key={link.href}
                 href={link.href}
                 className={`header-links ${
-                  isActive
-                    ? "bg-blue-300 dark:bg-yellow-500/50"
-                    : "hover:bg-blue-300 dark:hover:bg-yellow-500/20"
-                } ${link.name === "manage your acc" ? "hidden md:block" : ""}`}
+                  isActive ? "ring-1" : "hover:rounded-none! hover:border-b"
+                }`}
               >
                 {link.name}
               </Link>
             );
           })}
         </nav>
+
         <SignedIn>
           <div className="sm:scale-110 md:scale-125">
             <UserButton

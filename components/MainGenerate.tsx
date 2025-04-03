@@ -1,6 +1,6 @@
 "use client";
 
-import { MainGenerateProps } from "@/app/types";
+import { MainGenerateProps } from "@/app/types/types";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
@@ -21,7 +21,7 @@ export default function MainGenerate({
   ) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
-        product.id === productId
+        product.productId === productId
           ? { ...product, selectedColor: event.target.value }
           : product
       )
@@ -34,7 +34,7 @@ export default function MainGenerate({
   ) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
-        product.id === productId
+        product.productId === productId
           ? { ...product, selectedSize: event.target.value }
           : product
       )
@@ -47,7 +47,7 @@ export default function MainGenerate({
   ) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
-        product.id === productId
+        product.productId === productId
           ? { ...product, selectedQuantity: Number(event.target.value) }
           : product
       )
@@ -84,8 +84,8 @@ export default function MainGenerate({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 -mx-8 sm:-mx-7 sm:-mx gap-y-10 gap-x-5 ">
         {products.map((product) => (
           <div
-            key={product.id}
-            className="grid grid-cols-2 border rounded-3xl relative"
+            key={product.productId}
+            className="grid grid-cols-2 relative shadow hover:shadow-md shadow-black/50 rounded-3xl dark:border dark:hover:border-red-300"
           >
             <Link
               href={`/images?imgUrl=${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
@@ -95,9 +95,11 @@ export default function MainGenerate({
                 height={0}
                 src={`/images/${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
                 alt={`${product.for + "'s " + product.type}.jpeg `}
-                className="w-full h-full max-h-52 brightness-95 rounded-l-[23px] object-cover"
+                className="w-full h-full max-h-52 brightness-95 rounded-l-[24px] object-cover"
               />
             </Link>
+
+            {/* Products Form Component */}
             <ProductsForm
               formHandlers={{
                 product,

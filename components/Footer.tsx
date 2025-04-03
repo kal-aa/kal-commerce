@@ -1,6 +1,6 @@
 "use client";
 
-import { SignedIn, SignOutButton, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import {
   FaEnvelope,
@@ -11,8 +11,9 @@ import {
 import { FaArrowUp } from "react-icons/fa";
 
 export const Footer = () => {
-  const { isLoaded, userId } = useAuth();
-  const isAuthorized = isLoaded && userId;
+  const { isLoaded, user } = useUser();
+  const isAuthorized = isLoaded && user;
+  const isAdmin = user?.publicMetadata?.role === "admin";
 
   const handleUpArrow = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -22,17 +23,15 @@ export const Footer = () => {
     <footer>
       <div className="footer-container">
         <div className="flex items-center justify-around md:py-4 text-sm font-bold md:flex-row-reverse relative">
-          <div className="flex flex-col items-center space-y-2 sm:mt-2">
-            <Link
-              href={
-                isAuthorized
-                  ? `/manage-your-account`
-                  : "/sign-up"
-              }
-              className="footer-links sm:hidden"
-            >
-              {isAuthorized ? "Manage your account" : "Sign up"}
-            </Link>
+          <div className="flex flex-col items-center space-y-3 md:space-y-5 mt-2 sm:mt-5">
+            {(!isAuthorized || isAdmin) && (
+              <Link
+                href={!isAuthorized ? "/sign-up" : "/admin"}
+                className="footer-links sm:hidden"
+              >
+                {!isAuthorized ? "Sign up" : "Admin"}
+              </Link>
+            )}
             <Link
               href="mailto:sadkalshayee@gmail.com"
               target="_blank"
@@ -64,7 +63,7 @@ export const Footer = () => {
                   title="sign out"
                   color="red"
                   size={20}
-                  className="sm:hidden"
+                  className="sm:hidden cursor-pointer hover:scale-95"
                 />
               </SignOutButton>
             </SignedIn>
@@ -78,21 +77,21 @@ export const Footer = () => {
                   title="sign out"
                   color="red"
                   size={20}
-                  className="inline ml-1 mb-0.5"
+                  className="inline ml-1 mb-0.5 hover:scale-95"
                 />
               </SignOutButton>
             </SignedIn>
           </div>
           <div className="hidden sm:block">
-            <div className="flex flex-col items-center space-y-2 sm:mt-2">
-              <Link
-                href={
-                  isAuthorized ? `/manage-your-account/` : "/"
-                }
-                className="footer-links"
-              >
-                {isAuthorized ? "Manage your account" : "Discover our platform"}
-              </Link>
+            <div className="flex flex-col items-center space-y-3 md:space-y-5">
+              {(!isAuthorized || isAdmin) && (
+                <Link
+                  href={!isAuthorized ? "/" : "/admin"}
+                  className="footer-links"
+                >
+                  {!isAuthorized ? "Discover our platform" : "Admin"}
+                </Link>
+              )}
               <Link
                 href={isAuthorized ? `/about-us` : "/sign-up"}
                 className="footer-links"
@@ -110,7 +109,7 @@ export const Footer = () => {
           <FaArrowUp
             title="^To the top^"
             onClick={handleUpArrow}
-            className="absolute right-4 top-1 text-xl text-yellow-700 md:right-[48%]"
+            className="absolute right-4 top-1 text-xl text-yellow-700 hover:text-yellow-700/80 md:right-[48%] cursor-pointer"
           />
         </div>
         <div className="text-center font-bold md:hidden">

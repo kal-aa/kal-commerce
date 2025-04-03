@@ -20,7 +20,7 @@ export interface ProductsFormProps {
 
 // Define the `Product` type (if not already defined)
 export interface Product {
-  id: number;
+  productId: number;
   price: number;
   for: string;
   type: string;
@@ -51,6 +51,7 @@ export interface Product {
 export interface OrderAlongWithProduct {
   id: string;
   productId: number;
+  userId: string;
   price: number;
   for: string;
   type: string;
@@ -58,7 +59,7 @@ export interface OrderAlongWithProduct {
   selectedSize: string;
   selectedQuantity: number;
   status: string;
-  updatedAt: Date;
+  createdAt: Date;
 }
 
 // MainGenerate Props interface

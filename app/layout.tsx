@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import ToastNotification from "@/components/ToastNotification";
 import SearchBar from "@/components/SearchBar";
 export const metadata: Metadata = {
-  title: { default: "Kal-commerce", template: "%s | kal-commerce" },
+  title: { default: "kal-commerce", template: "%s | kal-commerce" },
   description: "an E-commerce website dedicated to offering huge collectin of ",
 };
 

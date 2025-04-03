@@ -1,15 +1,11 @@
 "use server";
 
 import { mongoDb } from "./utils/mongodb";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 
-export async function searchAction(formData: FormData) {
-  const query = formData.get("query") as string;
-  console.log(query);
-}
-
+// Submit product action
 export async function submitProductAction(formData: FormData) {
   const db = await mongoDb();
 
@@ -71,6 +67,7 @@ export async function submitProductAction(formData: FormData) {
   }
 }
 
+// Remove order action
 export async function removeOrderAction(id: string, action: string) {
   const db = await mongoDb();
 
@@ -96,4 +93,57 @@ export async function removeOrderAction(id: string, action: string) {
     revalidatePath("/your-orders");
     return;
   }
+}
+
+// Set admin role
+export async function setRole(formData: FormData) {
+  const { sessionClaims } = await auth();
+
+  if (sessionClaims?.metadata?.role !== "admin") {
+    throw new Error("Not Authorized");
+  }
+
+  const client = await clerkClient();
+  const id = formData.get("id") as string;
+
+  try {
+    await client.users.updateUser(id, {
+      publicMetadata: { role: "admin" },
+    });
+    revalidatePath("/admin");
+  } catch {
+    throw new Error("Failed to set role");
+  }
+}
+
+// Remove admin role
+export async function removeRole(formData: FormData) {
+  const { sessionClaims } = await auth();
+
+  if (sessionClaims?.metadata?.role !== "admin") {
+    throw new Error("Not Authorized");
+  }
+
+  const client = await clerkClient();
+  const id = formData.get("id") as string;
+
+  try {
+    await client.users.updateUser(id, {
+      publicMetadata: { role: "client" },
+    });
+    revalidatePath("/admin");
+  } catch {
+    throw new Error("Failed to remove role");
+  }
+}
+
+export async function changeStatusAction(formData: FormData) {
+  const db = await mongoDb();
+
+  const orderId = formData.get("orderId") as string;
+  const status = formData.get(`status-${orderId}`) as string;
+  const _id = new ObjectId(orderId);
+
+  await db.collection("orders").updateOne({ _id }, { $set: { status } });
+  revalidatePath("/admin/manage-orders");
 }

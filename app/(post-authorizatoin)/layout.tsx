@@ -2,7 +2,7 @@ import "../globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Products",
+  title: { default: "products", template: "%s | kal-commerce" },
   description: "Post authorization layout of kal-commerce",
 };
 

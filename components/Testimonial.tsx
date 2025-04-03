@@ -1,6 +1,6 @@
 import Image from "next/image";
 import testimonialsData from "../app/data/testimonials.json";
-import { Testimony } from "@/app/types";
+import { Testimony } from "@/app/types/types";
 import Link from "next/link";
 
 export default async function Testimonial() {
@@ -19,7 +19,7 @@ export default async function Testimonial() {
         {testimonialsData.testimonials.map((testimony: Testimony) => (
           <div
             key={testimony.id}
-            className="p-5 rounded-2xl relative shadow-md shadow-white/30 text-center"
+            className="p-5 rounded-2xl relative shadow-md text-center shadow-black/20 dark:shadow-white/30"
           >
             <Link href={`/images?imgUrl=others/${testimony.name}.jpeg`}>
               <Image

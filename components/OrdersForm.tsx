@@ -1,5 +1,5 @@
 import Form from "next/form";
-import { OrderAlongWithProduct } from "@/app/types";
+import { OrderAlongWithProduct } from "@/app/types/types";
 
 export default function OrdersForm({
   removeOrder,

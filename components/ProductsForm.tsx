@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useOptimistic, useTransition } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
-import { ProductsFormProps } from "@/app/types";
+import { ProductsFormProps } from "@/app/types/types";
 import { submitProductAction } from "@/app/actions";
 import { useSWRConfig } from "swr";
 
@@ -29,7 +29,7 @@ export default function ProductsForm({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    startTransition(() => setOptimisticId(product.id));
+    startTransition(() => setOptimisticId(product.productId));
     const response = await submitProductAction(formData);
     startTransition(() => setOptimisticId(null));
 
@@ -44,11 +44,11 @@ export default function ProductsForm({
   return (
     <form
       onSubmit={handleAddToCart}
-      className={`grid grid-row-4 w-full bg-yellow-400 rounded-e-3xl ${
-        isAddOrdersPage && "dark:bg-black"
+      className={`grid grid-row-4 w-full bg-yellow-400 rounded-r-3xl ${
+        isAddOrdersPage ? "dark:bg-black" : ""
       }`}
     >
-      <input type="hidden" name="productId" value={product.id} />
+      <input type="hidden" name="productId" value={product.productId} />
       <div className="text-center pt-2 capitalize">
         {product.for + " " + product.type}
       </div>
@@ -62,11 +62,11 @@ export default function ProductsForm({
             <div key={index}>
               <input
                 type="radio"
-                name={`color-${product.id}`}
+                name={`color-${product.productId}`}
                 value={colorValue}
                 checked={product.selectedColor === colorValue}
-                onChange={(e) => handleColorChange(e, product.id)}
-                className="mr-1 sm:mr-2"
+                onChange={(e) => handleColorChange(e, product.productId)}
+                className="mr-1 sm:mr-2 cursor-pointer"
               />
               {colorValue.replace("-", " ")} <br />
             </div>
@@ -77,11 +77,11 @@ export default function ProductsForm({
             <div key={size}>
               <input
                 type="radio"
-                name={`size-${product.id}`}
+                name={`size-${product.productId}`}
                 value={size}
                 checked={product.selectedSize === size}
-                onChange={(e) => handleSizeChange(e, product.id)}
-                className="mr-1 sm:mr-2"
+                onChange={(e) => handleSizeChange(e, product.productId)}
+                className="mr-1 sm:mr-2 cursor-pointer"
               />
               {size} <br />
             </div>
@@ -91,9 +91,9 @@ export default function ProductsForm({
       <div className=" text-center border-t p-1">
         Quantity:
         <select
-          name={`quantity-${product.id}`}
-          className="outline-none rounded-lg ml-2 dark:bg-blue-600/70"
-          onChange={(e) => handleQuantityChange(e, product.id)}
+          name={`quantity-${product.productId}`}
+          className="outline-none cursor-pointer rounded-lg ml-2 bg-white/70 hover:bg-white/80 dark:bg-blue-600/70 dark:hover:bg-blue-600/90"
+          onChange={(e) => handleQuantityChange(e, product.productId)}
         >
           {[...Array(10).keys()].map((_, index) => (
             <option key={index + 1} value={index + 1}>
@@ -107,20 +107,22 @@ export default function ProductsForm({
         {isAddOrdersPage ? (
           <button
             type="submit"
-            disabled={isPending || optimisticId === product.id}
+            disabled={isPending || optimisticId === product.productId}
             className={`submit-btn
                     ${
-                      isPending || optimisticId === product.id
+                      isPending || optimisticId === product.productId
                         ? "cursor-progress"
                         : "cursor-pointer"
                     }
                   `}
           >
-            {isPending || optimisticId === product.id ? "adding..." : "Add"}
+            {isPending || optimisticId === product.productId
+              ? "adding..."
+              : "Add"}
           </button>
         ) : (
           <Link className="" href={!userId ? "/sign-up" : `/add-orders/`}>
-            <button className="submit-btn">Add</button>
+            <button className="submit-btn cursor-pointer">Add</button>
           </Link>
         )}
       </div>

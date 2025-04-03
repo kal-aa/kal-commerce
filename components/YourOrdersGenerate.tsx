@@ -1,7 +1,7 @@
 "use client";
 
 import { removeOrderAction } from "@/app/actions";
-import { OrderAlongWithProduct } from "@/app/types";
+import { OrderAlongWithProduct } from "@/app/types/types";
 import { useOptimistic } from "react";
 import OrdersForm from "./OrdersForm";
 import { round } from "@/app/utils/reuses";
@@ -37,22 +37,23 @@ export default function YourOrdersGenerate({
     const imgPath = `${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`;
 
     return (
-      <section key={order.id} className="flex max-h-[250px] h-full">
-        <div className="order-details">
-          <div className="border w-[90%] text-center">
+      <section
+        key={order.id}
+        className="flex max-h-[250px] h-full rounded-2xl overflow-hidden shadow shadow-black/70 hover:shadow-md dark:hover:border"
+      >
+        <div className="order-details text-center">
+          <div className="border w-[90%] py-1">
             {order.for + " " + order.type}
           </div>
-          <div className="border w-[80%] text-center">
-            {order.selectedColor}
-          </div>
-          <div className="border w-[70%] text-center">{order.selectedSize}</div>
-          <div className="flex justify-center space-x-2 border w-[80%]">
+          <div className="border w-[80%] py-1">{order.selectedColor}</div>
+          <div className="border w-[70%] py-1">{order.selectedSize}</div>
+          <div className="flex justify-center space-x-2 border w-[80%] py-1">
             <select>
               <option>{order.selectedQuantity}</option>
             </select>
             <div>${round(order.selectedQuantity * order.price)}</div>
           </div>
-          <div className="border w-[90%] text-center">{order.status}</div>
+          <div className="border w-[90%] py-1">{order.status}</div>
           {/* Orders form */}
           <OrdersForm removeOrder={removeOrder} order={order} />
         </div>

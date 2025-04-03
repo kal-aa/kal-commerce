@@ -13,7 +13,7 @@ export default async function ImagePage({
 
   return (
     <div className="flex justify-center">
-      <Image width={300} height={0} src={`/images/${imgUrl}`} alt={alt} />
+      <Image width={300} height={0} src={`/images/${imgUrl}`} alt={alt} className="rounded-2xl" />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "productId": 1,
       "price": 35,
       "for": "men",
       "type": "jacket",
@@ -17,7 +17,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 2,
+      "productId": 2,
       "price": 17,
       "for": "women",
       "type": "pants",
@@ -33,7 +33,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 3,
+      "productId": 3,
       "price": 13,
       "for": "children",
       "type": "shirt",
@@ -49,7 +49,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 4,
+      "productId": 4,
       "price": 34,
       "for": "women",
       "type": "jacket",
@@ -65,7 +65,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 5,
+      "productId": 5,
       "price": 20,
       "for": "men",
       "type": "pants",
@@ -81,7 +81,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 6,
+      "productId": 6,
       "price": 17,
       "for": "children",
       "type": "joggers",
@@ -97,7 +97,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 7,
+      "productId": 7,
       "price": 15,
       "for": "men",
       "type": "shirt",
@@ -113,7 +113,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 8,
+      "productId": 8,
       "price": 31,
       "for": "women",
       "type": "hoodie",
@@ -129,7 +129,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 9,
+      "productId": 9,
       "price": 19,
       "for": "children",
       "type": "pants",
@@ -145,7 +145,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 10,
+      "productId": 10,
       "price": 32,
       "for": "men",
       "type": "joggers",
@@ -161,7 +161,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 11,
+      "productId": 11,
       "price": 16,
       "for": "women",
       "type": "joggers",
@@ -177,7 +177,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 12,
+      "productId": 12,
       "price": 24,
       "for": "children",
       "type": "hoodie",
@@ -193,7 +193,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 13,
+      "productId": 13,
       "price": 12,
       "for": "women",
       "type": "shirt",
@@ -209,7 +209,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 14,
+      "productId": 14,
       "price": 29,
       "for": "children",
       "type": "jacket",
@@ -225,7 +225,7 @@
       "selectedQuantity": 1
     },
     {
-      "id": 15,
+      "productId": 15,
       "price": 28,
       "for": "men",
       "type": "hoodie",
@@ -239,36 +239,6 @@
       "selectedColor": "black",
       "selectedSize": "MD",
       "selectedQuantity": 1
-    }
-  ],
-
-  "orders": [
-    {
-      "id": 1,
-      "productId": 5,
-      "selectedColor": "electric-blue",
-      "selectedSize": "MD",
-      "selectedQuantity": 1,
-      "status": "on shipping",
-      "createdAt": "22/33/33"
-    },
-    {
-      "id": 2,
-      "productId": 9,
-      "selectedColor": "fiery-red",
-      "selectedSize": "SM",
-      "selectedQuantity": 8,
-      "status": "on shipping",
-      "createdAt": "22/33/33"
-    },
-    {
-      "id": 3,
-      "productId": 7,
-      "selectedColor": "black",
-      "selectedSize": "LG",
-      "selectedQuantity": 3,
-      "status": "on shipping",
-      "createdAt": "22/33/33"
     }
   ]
 }
