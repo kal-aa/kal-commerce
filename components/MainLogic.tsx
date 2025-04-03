@@ -6,7 +6,7 @@ export default async function MainLogic({
   query,
 }: {
   isAddOrdersPage: boolean;
-  query: string;
+  query?: string;
 }) {
   const filteredProducts = allProducts.products.filter((product) => {
     if (!query) return true;
