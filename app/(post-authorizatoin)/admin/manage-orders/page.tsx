@@ -67,22 +67,7 @@ export default async function page() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-10 px-5 text-center">
             {userOrders.map((order) => (
-              <div
-                key={order.id}
-                className="order-details bg-transparent! dark:text-white! shadow-sm shadow-blue-600/60 dark:shadow-blue-100/30 py-3! hover:shadow-md"
-              >
-                <div className="border w-[70%] py-1 rounded-full hover:border-red-200">
-                  {new Date(order.createdAt).toLocaleString()}
-                </div>
-                <div className="border w-[90%] py-1 rounded-full hover:border-red-200">
-                  {order.for + " " + order.selectedColor + " " + order.type}
-                </div>
-                <div className="border w-[70%] py-1 rounded-full hover:border-red-200 flex justify-around">
-                  <p>{"Size: " + order.selectedSize}</p>
-                  <p>{"Quantity: " + order.selectedQuantity}</p>
-                </div>
-                <ManageOrdersForm order={order} />
-              </div>
+              <ManageOrdersForm key={order.id} order={order} />
             ))}
           </div>
         </details>

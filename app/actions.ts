@@ -67,6 +67,15 @@ export async function submitProductAction(formData: FormData) {
   }
 }
 
+// Change order status action
+export async function changeStatusAction(orderId: string, status: string) {
+  const db = await mongoDb();
+  const _id = new ObjectId(orderId);
+
+  await db.collection("orders").updateOne({ _id }, { $set: { status } });
+  revalidatePath("/admin/manage-orders");
+}
+
 // Remove order action
 export async function removeOrderAction(id: string, action: string) {
   const db = await mongoDb();
@@ -96,7 +105,7 @@ export async function removeOrderAction(id: string, action: string) {
 }
 
 // Set admin role
-export async function setRole(formData: FormData) {
+export async function setRole(id: string) {
   const { sessionClaims } = await auth();
 
   if (sessionClaims?.metadata?.role !== "admin") {
@@ -104,7 +113,6 @@ export async function setRole(formData: FormData) {
   }
 
   const client = await clerkClient();
-  const id = formData.get("id") as string;
 
   try {
     await client.users.updateUser(id, {
@@ -117,7 +125,7 @@ export async function setRole(formData: FormData) {
 }
 
 // Remove admin role
-export async function removeRole(formData: FormData) {
+export async function removeRole(id: string) {
   const { sessionClaims } = await auth();
 
   if (sessionClaims?.metadata?.role !== "admin") {
@@ -125,7 +133,6 @@ export async function removeRole(formData: FormData) {
   }
 
   const client = await clerkClient();
-  const id = formData.get("id") as string;
 
   try {
     await client.users.updateUser(id, {
@@ -135,15 +142,4 @@ export async function removeRole(formData: FormData) {
   } catch {
     throw new Error("Failed to remove role");
   }
-}
-
-export async function changeStatusAction(formData: FormData) {
-  const db = await mongoDb();
-
-  const orderId = formData.get("orderId") as string;
-  const status = formData.get(`status-${orderId}`) as string;
-  const _id = new ObjectId(orderId);
-
-  await db.collection("orders").updateOne({ _id }, { $set: { status } });
-  revalidatePath("/admin/manage-orders");
 }

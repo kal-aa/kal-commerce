@@ -11,7 +11,7 @@ export default function AdminNav() {
   ];
 
   return (
-    <div className="flex space-x-3 sm:justify-start justify-around mb-5">
+    <div className="flex space-x-3 sm:justify-start sm:pl-[3%] justify-around mb-5">
       {adminNav.map((link) => {
         const isActive = pathname === link.href;
         return (
