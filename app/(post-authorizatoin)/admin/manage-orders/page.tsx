@@ -55,6 +55,16 @@ export default async function page() {
     return { fullname, emailAddress };
   }
 
+  if (ordersFromDb.length === 0) {
+    return (
+      <div className=" flex items-center justify-center min-h-[55vh] text-center col-span-5 mx-[5%]">
+        <p className="w-full text-white bg-red-400 py-3 capitalize">
+          No orders have been placed yet!
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 ml-5">
       {Object.entries(groupedOrders).map(async ([userId, userOrders]) => (
