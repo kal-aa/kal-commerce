@@ -37,7 +37,7 @@ export default function OptimisticRole({
   const role = optimisticUser.publicMetadata?.role;
 
   return (
-    <div className="w-1/2 flex flex-row-reverse sm:flex-row justify-between">
+    <div className="w-1/2 flex flex-row-reverse sm:flex-row justify-between sm:items-center">
       <div className="dark:text-200 uppercase">
         {filterMainUser?.id !== user.id
           ? (optimisticUser.publicMetadata?.role as string)

@@ -43,37 +43,6 @@ export default async function AdminPage() {
             user={JSON.parse(JSON.stringify(user))}
             filterMainUser={JSON.parse(JSON.stringify(filterMainUser))}
           />
-
-          {/* <div className="w-1/2 flex flex-row-reverse sm:flex-row justify-between">
-            <div className="dark:text-200 uppercase">
-              {filterMainUser?.id !== user.id
-                ? (user.publicMetadata?.role as string)
-                : ""}
-            </div>
-            <div>
-              {filterMainUser?.id === user.id ? (
-                <span className="mr-2">Main Admin</span>
-              ) : (
-                <span className="flex flex-col md:flex-row gap-2">
-                  {user.publicMetadata.role !== "admin" ? (
-                    <form action={setRole} className="inline">
-                      <input type="hidden" value={user.id} name="id" />
-                      <button type="submit" className="make-admin-btns">
-                        Make Admin
-                      </button>
-                    </form>
-                  ) : (
-                    <form action={removeRole} className="inline">
-                      <input type="hidden" value={user.id} name="id" />
-                      <button type="submit" className="make-admin-btns">
-                        Remove Admin
-                      </button>
-                    </form>
-                  )}
-                </span>
-              )}
-            </div>
-          </div> */}
         </div>
       ))}
     </div>
