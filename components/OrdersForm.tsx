@@ -24,7 +24,7 @@ export default function OrdersForm({
           value="removeOne"
           className="remove-order-btn"
         >
-          Remove-1
+          Remove Single Item
         </button>
       )}
       {/* Button for removing all orders */}
@@ -34,7 +34,7 @@ export default function OrdersForm({
         value="removeAll"
         className="remove-order-btn"
       >
-        Remove from cart
+        Remove All Items
       </button>
     </Form>
   );

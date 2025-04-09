@@ -59,23 +59,23 @@ export default function ProductsForm({
 
       <div className="row-span-3 grid grid-cols-3 px-2 sm:px-1 lg:px-2 gap-1 text-xs spacey border-white">
         <div className="col-span-2 space-y-2">
-          {Object.entries(product.color).map(([index, colorValue]) => (
+          {product.color.map((color, index) => (
             <div key={index}>
               <input
                 type="radio"
                 name={`color-${product.productId}`}
-                value={colorValue}
-                checked={product.selectedColor === colorValue}
+                value={color}
+                checked={product.selectedColor === color}
                 onChange={(e) => handleColorChange(e, product.productId)}
                 className="mr-1 sm:mr-2 cursor-pointer"
               />
-              {colorValue.replace("-", " ")} <br />
+              {color.replace("-", " ")} <br />
             </div>
           ))}
         </div>
         <div className="justify-self-center space-y-2">
-          {["XS", "SM", "MD", "LG", "XL"].map((size) => (
-            <div key={size}>
+          {product.size.map((size, index) => (
+            <div key={index}>
               <input
                 type="radio"
                 name={`size-${product.productId}`}

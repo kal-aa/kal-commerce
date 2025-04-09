@@ -14,7 +14,7 @@ export default function SearchBar() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!queryValue.trim()) return;
+    if (!queryValue.trim() && pathname !== "/add-orders") return;
 
     const form = e.target as HTMLFormElement;
     const query = new FormData(form).get("query") as string;
@@ -34,24 +34,16 @@ export default function SearchBar() {
     <form onSubmit={handleSearchSubmit} className="w-1/4 flex items-center">
       <div className="relative">
         {queryValue && (
-          <TiDelete
-            onClick={handleQueryDelete}
-            className="query-remove-icon"
-          />
+          <TiDelete onClick={handleQueryDelete} className="query-remove-icon" />
         )}
         <input
           name="query"
           value={queryValue}
           onChange={(e) => setQueryValue(e.target.value)}
-          className={`search-input ${
-            queryValue && "pl-6!"
-          }`}
+          className={`search-input ${queryValue && "pl-6!"}`}
         />
       </div>
-      <button
-        type="submit"
-        className="search-btn"
-      >
+      <button type="submit" className="search-btn">
         <FaSearch className="inline-block text-black/30" />
       </button>
     </form>

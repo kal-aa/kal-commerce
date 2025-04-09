@@ -1,10 +1,18 @@
 // import { removeRole, setRole } from "@/app/actions";
 import OptimisticRole from "@/components/OptimisticRole";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, User } from "@clerk/nextjs/server";
 
 export default async function AdminPage() {
   const client = await clerkClient();
-  const users = (await client.users.getUserList()).data;
+  let users: User[] = [];
+  try {
+    users = (await client.users.getUserList()).data;
+  } catch (error) {
+    console.error(
+      "An unexpected error occured, while getUserList(), Clerk:",
+      error
+    );
+  }
 
   // make the btns to be unable to change the role of the main admin
   const mainUserEmail = "sadkalshayee@gmail.com";

@@ -55,7 +55,7 @@ export default function MainGenerate({
   };
 
   return (
-    <div className="px-10 py-5 mt-24">
+    <div className="px-10 py-5">
       <h1
         className={`intro-header ${
           isAddOrdersPage ? "" : "bg-stone-100 dark:bg-blue-800/30"

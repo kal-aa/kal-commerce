@@ -11,12 +11,17 @@ const isPublicRoute = createRouteMatcher([
 const isAdmin = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
+  const url = new URL(req.url);
+
+  if (url.pathname === "/api/stripe/webhook") {
+    return NextResponse.next();
+  }
+
   if (
     isAdmin(req) &&
     (await auth()).sessionClaims?.metadata?.role !== "admin"
   ) {
-    const url = new URL("/", req.url);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/", req.url));
   }
   if (!isPublicRoute(req)) {
     await auth.protect();
@@ -25,9 +30,8 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
+    // Skip Clerk for Stripe webhook
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };

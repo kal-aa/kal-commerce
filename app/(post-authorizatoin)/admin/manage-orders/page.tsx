@@ -1,12 +1,30 @@
-import products from "../../../data/products.json";
 import { mongoDb } from "@/app/utils/mongodb";
-import { OrderAlongWithProduct } from "@/app/types/types";
 import { clerkClient } from "@clerk/nextjs/server";
+import { OrderAlongWithProduct } from "@/app/types/types";
+import products from "../../../data/products.json";
 import ManageOrdersForm from "@/components/ManageOrdersForm";
+import Pagination from "@/components/Pagination";
+import AdminSortOrders from "@/components/AdminSortOrders";
 
-export default async function page() {
+export default async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; sortBy?: string }>;
+}) {
   const db = await mongoDb();
-  const ordersFromDb = await db.collection("orders").find().toArray();
+  const { page, sortBy } = await searchParams;
+  const itemsPerPage = 20;
+  const currentPage = parseInt(page || "1", 10);
+  const skip = (currentPage - 1) * itemsPerPage;
+  const totalOrders = await db.collection("orders").countDocuments();
+  const hasMore = currentPage * itemsPerPage < totalOrders;
+  const totalPages = Math.ceil(totalOrders / itemsPerPage);
+  const ordersFromDb = await db
+    .collection("orders")
+    .find()
+    .skip(skip)
+    .limit(itemsPerPage)
+    .toArray();
 
   // get product information of each order
   const orders =
@@ -18,8 +36,9 @@ export default async function page() {
             );
             if (!product) return null;
 
-            const { color, ...restOfProduct } = product;
-            color.black = "black";
+            const { color, size, ...restOfProduct } = product;
+            if (color || size) {
+            }
             return {
               id: order._id.toString(),
               userId: order.userId,
@@ -34,15 +53,52 @@ export default async function page() {
           .filter((order): order is OrderAlongWithProduct => order !== null)
       : [];
 
-  // assign orders to their userIds
-  const groupedOrders = orders.reduce<Record<string, OrderAlongWithProduct[]>>(
-    (acc, order) => {
-      if (!acc[order.userId]) acc[order.userId] = [];
-      acc[order.userId].push(order);
-      return acc;
-    },
-    {}
-  );
+  const defaultSort = sortBy || "date-descending";
+  let sortedOrders;
+  switch (defaultSort) {
+    case "date-descending":
+      // Sort by date in descending order
+      sortedOrders = orders.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+      );
+      break;
+
+    case "date-ascending":
+      // Sort by date in ascending order
+      sortedOrders = orders.sort(
+        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+      );
+      break;
+
+    //4/6/2025, 5:17:46 PM or 4/6/2025, 12:04:08 AM
+    case "processing-first":
+      // Sort by "processing" status first
+      sortedOrders = orders.sort((a, b) => {
+        if (a.status === "Processing" && b.status !== "Processing") return -1;
+        if (b.status === "Processing" && a.status !== "Processing") return 1;
+        return 0;
+      });
+      break;
+
+    case "pending-checkout-first":
+      // Sort by "pending-checkout" status first
+      sortedOrders = orders.sort((a, b) => {
+        if (a.status === "Pending Checkout" && b.status !== "Pending Checkout")
+          return -1;
+        if (b.status === "Pending Checkout" && a.status !== "Pending Checkout")
+          return 1;
+        return 0;
+      });
+      break;
+    //
+
+    default:
+      // Default sorting behavior, if no match
+      sortedOrders = orders.sort(
+        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+      );
+      break;
+  }
 
   // get user info
   async function userInfo(userId: string) {
@@ -66,22 +122,26 @@ export default async function page() {
   }
 
   return (
-    <div className="space-y-6 ml-5">
-      {Object.entries(groupedOrders).map(async ([userId, userOrders]) => (
-        <details key={userId}>
-          <summary className="md:text-xl cursor-pointer mb-5 hover:border-l">
-            {(await userInfo(userId)).emailAddress ||
-              (await userInfo(userId)).fullname}
-            &apos;s Order(s)
-          </summary>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-10 px-5 text-center">
-            {userOrders.map((order) => (
-              <ManageOrdersForm key={order.id} order={order} />
-            ))}
-          </div>
-        </details>
-      ))}
-    </div>
+    <section className="mx-8 my-5">
+      <AdminSortOrders />
+      <div className="px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 -mx-8 sm:-mx-7 sm:-mx gap-y-10 gap-x-5">
+        {sortedOrders.map(async (order) => {
+          const userName =
+            (await userInfo(order.userId)).emailAddress ||
+            (await userInfo(order.userId)).fullname;
+          return (
+            <div key={order.id}>
+              <ManageOrdersForm order={order} userName={userName} />
+            </div>
+          );
+        })}
+      </div>
+      <Pagination
+        baseUrl="admin/manage-orders"
+        page={currentPage}
+        hasMore={hasMore}
+        totalPages={totalPages}
+      />
+    </section>
   );
 }

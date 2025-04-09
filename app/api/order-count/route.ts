@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const db = await mongoDb();
   const { userId } = await auth();
-  const count = await db.collection("orders").countDocuments({ userId });
+  const count = await db
+    .collection("orders")
+    .countDocuments({ userId, status: "Pending Checkout" });
   return new NextResponse(JSON.stringify({ count }));
 }

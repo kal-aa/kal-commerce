@@ -40,7 +40,7 @@ export default function OptimisticRole({
     <div className="w-1/2 flex flex-row-reverse sm:flex-row justify-between sm:items-center">
       <div className="dark:text-200 uppercase">
         {filterMainUser?.id !== user.id
-          ? (optimisticUser.publicMetadata?.role as string)
+          ? (optimisticUser.publicMetadata?.role as string) || "CLIENT"
           : ""}
       </div>
       <div>
@@ -48,16 +48,14 @@ export default function OptimisticRole({
           <span className="mr-2">Main Admin</span>
         ) : (
           <div className="flex flex-col md:flex-row gap-2">
-            {role ? (
-              <button
-                onClick={() =>
-                  handleRoleChange(role === "admin" ? "client" : "admin")
-                }
-                className="make-admin-btns"
-              >
-                {role === "admin" ? "Remove Admin" : "Make Admin"}
-              </button>
-            ) : null}
+            <button
+              onClick={() =>
+                handleRoleChange(role === "admin" ? "client" : "admin")
+              }
+              className="make-admin-btns"
+            >
+              {role === "admin" ? "Remove Admin" : "Make Admin"}
+            </button>
           </div>
         )}
       </div>

@@ -1,8 +1,10 @@
+import { ObjectId } from "mongodb";
+
 export type Navlink = { name: string; href: string };
 export type Testimony = { id: number; name: string; testimony: string };
 
 export interface ProductsFormProps {
-  product: Product;
+  product: EnhancedProduct;
   isAddOrdersPage: boolean;
   handleColorChange: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -24,29 +26,15 @@ export interface Product {
   price: number;
   for: string;
   type: string;
-  color: {
-    black: string;
-    electricBlue: string;
-    fieryRed: string;
-    limeGreen: string;
-    sunsetOrange: string;
-  };
+  color: string[];
+  size: string[];
+}
+
+export interface EnhancedProduct extends Product {
   selectedColor: string;
   selectedSize: string;
   selectedQuantity: number;
 }
-
-// export interface Order {
-//   _id: string;
-//   userId: string;
-//   productId: number;
-//   selectedColor: string;
-//   selectedSize: string;
-//   selectedQuantity: number;
-//   status: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
 
 export interface OrderAlongWithProduct {
   id: string;
@@ -60,10 +48,40 @@ export interface OrderAlongWithProduct {
   selectedQuantity: number;
   status: string;
   createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Order {
+  orderId: string;
+  productId: number;
+  selectedColor: string;
+  selectedSize: string;
+  selectedQuantity: number;
+}
+
+// type OmitOrder = Omit<Order, "orderId">;
+export interface EnhancedOrder {
+  _id: ObjectId;
+  userId: string;
+  productId: number;
+  selectedColor: string;
+  selectedSize: string;
+  selectedQuantity: number;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PaginationProps {
+  page: number;
+  pageKey?: string;
+  hasMore: boolean;
+  totalPages: number;
+  baseUrl: string;
 }
 
 // MainGenerate Props interface
 export interface MainGenerateProps {
-  allProducts: Product[];
+  allProducts: EnhancedProduct[];
   isAddOrdersPage: boolean;
 }
