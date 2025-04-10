@@ -152,7 +152,7 @@ export default async function YourOrdersPage({
           <br />
           <hr />
           <br />
-          <div className="text-center col-span-5 bg-blue-700 py-3 text-white mb-5 mx-5">
+          <div className="text-center col-span-5 bg-blue-700 py-3 text-white mb-5 mx-5 px-2">
             <span className="font-bold">
               Below is a list of your orders currently in dispatch.
             </span>

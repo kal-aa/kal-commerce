@@ -1,20 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { TiDelete } from "react-icons/ti";
 
 export default function ImagePageIntercept() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [zoom, setZoom] = useState(false);
   const imgUrl = searchParams.get("imgUrl");
 
-  if (!imgUrl || !imgUrl.includes("/") || !imgUrl.includes(".")) redirect("/");
+  if (!imgUrl || !imgUrl.includes("/") || !imgUrl.includes(".")) {
+    router.push("/");
+    return null;
+  }
   const split = imgUrl.split("/");
   const alt = split[split.length - 1];
 
-  const router = useRouter();
   return (
     <div className="relative flex justify-center items-center">
       <div

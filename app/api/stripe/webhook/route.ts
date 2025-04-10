@@ -1,4 +1,4 @@
-// stripe listen --forward-to http://localhost:3000/api/stripe/webhook
+//stripe listen --forward-to localhost:3000/app/api/stripe/webhook
 import Stripe from "stripe";
 import { mongoDb } from "@/app/utils/mongodb";
 import { ObjectId } from "mongodb";
@@ -59,15 +59,12 @@ export async function POST(req: Request) {
             .findOne({ _id: new ObjectId(orderId) });
 
           if (order) {
-            await db.collection("orders").updateOne(
-              { _id: new ObjectId(orderId) },
-              {
-                $set: {
-                  status: "Processing",
-                  updatedAt: new Date(),
-                },
-              }
-            );
+            await db
+              .collection("orders")
+              .updateOne(
+                { _id: new ObjectId(orderId) },
+                { $set: { status: "Processing", updatedAt: new Date() } }
+              );
           } else {
             console.error(`Order with Id ${orderId} not found`);
           }
