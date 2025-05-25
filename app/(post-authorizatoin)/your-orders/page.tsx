@@ -43,7 +43,10 @@ export default async function YourOrdersPage({
   let pendingCheckoutOrders = [];
   let processingOrders = [];
   // helper function to fetch orders
-  const fetchOrders = async (status: string, skip: number) =>
+  const fetchOrders = async (
+    status: "Processing" | "Pending Checkout" | "Dispatched",
+    skip: number
+  ) =>
     await db
       .collection<EnhancedOrder>("orders")
       .find({ userId, status })
@@ -84,6 +87,9 @@ export default async function YourOrdersPage({
           status: o.status,
           createdAt: o.createdAt,
           updatedAt: o.updatedAt,
+          // ...(o.paymentIntentId && { paymentIntentId: o.paymentIntentId }),
+          // ...(o.chargeId && { chargeId: o.chargeId }),
+          ...(o.paymentDate && { paymentDate: o.paymentDate }),
         };
       })
       .filter((order): order is OrderAlongWithProduct => order !== null);
@@ -106,12 +112,13 @@ export default async function YourOrdersPage({
   return (
     <>
       <h1 className="add-orders-header">
-        Delivery dates are estimated based on the item’s availability and the
-        shipping method selected during checkout. Typically, orders are
-        processed within 1-2 business days, and delivery can take anywhere from
-        3-7 business days depending on your location. You’ll receive a
-        confirmation email with your estimated delivery date once your order is
-        shipped. For orders over $250, shipping is{" "}
+        Delivery dates depend on item availability and shipping method,
+        typically processed in 1-2 business days with delivery in 3-7 days. A
+        confirmation email will provide your estimated delivery date. We offer a{" "}
+        <span className="text-black/60 dark:text-yellow-400/90 font-serif">
+          3-day refund
+        </span>{" "}
+        window from the delivery date. For orders over $250, shipping is{" "}
         <span className="text-black/60 dark:text-yellow-400/90 font-serif">
           FREE
         </span>{" "}

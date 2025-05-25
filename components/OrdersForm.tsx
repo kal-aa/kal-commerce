@@ -14,7 +14,7 @@ export default function OrdersForm({
         const action = formData.get("action") as string;
         removeOrder(order.id, action);
       }}
-      className="flex flex-col space-y-2"
+      className="flex flex-wrap items-center justify-center gap-2"
     >
       {/* Button for removing 1 order */}
       {order.selectedQuantity > 1 && (
@@ -24,7 +24,7 @@ export default function OrdersForm({
           value="removeOne"
           className="remove-order-btn"
         >
-          Remove Single Item
+          Remove One
         </button>
       )}
       {/* Button for removing all orders */}
@@ -34,7 +34,7 @@ export default function OrdersForm({
         value="removeAll"
         className="remove-order-btn"
       >
-        Remove All Items
+        {order.selectedQuantity === 1 ? "Remove Item" : "Remove All"}
       </button>
     </Form>
   );

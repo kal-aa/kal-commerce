@@ -84,7 +84,7 @@ export default function Header() {
                   !isYourOrdersPage && "animate-bounce hover:animate-none"
                 }`}
               >
-                {memorizedData?.count}
+                {memorizedData?.count < 10 ? memorizedData?.count : "9+"}
               </Link>
             )}
         </div>
@@ -120,7 +120,9 @@ export default function Header() {
                     !isYourOrdersPage &&
                     isAuthorized && (
                       <span className="count-orders rounded-sm! p-1! py-0! -right-4">
-                        {memorizedData?.count}
+                        {memorizedData?.count < 10
+                          ? memorizedData?.count
+                          : "9+"}
                       </span>
                     )}
                 </div>

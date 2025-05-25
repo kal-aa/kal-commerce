@@ -36,7 +36,7 @@ export interface EnhancedProduct extends Product {
   selectedQuantity: number;
 }
 
-export interface OrderAlongWithProduct {
+export interface OrderAlongWithProduct extends Status {
   id: string;
   productId: number;
   userId: string;
@@ -46,9 +46,11 @@ export interface OrderAlongWithProduct {
   selectedColor: string;
   selectedSize: string;
   selectedQuantity: number;
-  status: string;
   createdAt: Date;
   updatedAt: Date;
+  paymentDate: Date;
+  // paymentIntentId: string; //paymentIntent.id;
+  // chargeId: string; //charge.id;
 }
 
 export interface Order {
@@ -59,17 +61,23 @@ export interface Order {
   selectedQuantity: number;
 }
 
+export interface Status {
+  status: "Processing" | "Pending Checkout" | "Dispatched";
+}
+
 // type OmitOrder = Omit<Order, "orderId">;
-export interface EnhancedOrder {
+export interface EnhancedOrder extends Status {
   _id: ObjectId;
   userId: string;
   productId: number;
   selectedColor: string;
   selectedSize: string;
   selectedQuantity: number;
-  status: string;
   createdAt: Date;
   updatedAt: Date;
+  paymentDate: Date; //new Date(paymentIntent.created * 1000);
+  // paymentIntentId: string; //paymentIntent.id;
+  // chargeId: string; //charge.id;
 }
 
 export interface PaginationProps {

@@ -4,6 +4,9 @@ import { mongoDb } from "./utils/mongodb";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 // Submit product action
 export async function submitProductAction(formData: FormData) {
@@ -150,5 +153,60 @@ export async function removeRole(id: string) {
     revalidatePath("/admin");
   } catch {
     throw new Error("Failed to remove role");
+  }
+}
+
+// Refund action
+export async function refundOrder(orderId: string) {
+  if (!orderId) throw new Error("Order ID is required");
+
+  const db = await mongoDb();
+  const _id = new ObjectId(orderId);
+  const order = await db.collection("orders").findOne({ _id });
+
+  if (!order) throw new Error("Order not found");
+
+  const paymentIntentId = order.paymentIntentId;
+  const chargeId = order.chargeId;
+
+  if (!paymentIntentId && !chargeId) {
+    throw new Error("No payment information available");
+  }
+
+  try {
+    const refund = await stripe.refunds.create({
+      ...(chargeId
+        ? { charge: chargeId }
+        : { payment_intent: paymentIntentId }),
+    });
+
+    // status: "Processing" | "Pending Checkout" | "Dispatched";
+    await db.collection("orders").updateMany(
+      { paymentIntentId },
+      {
+        $set: {
+          status: "Pending Checkout",
+          updatedAt: new Date(),
+          refundDate: new Date(),
+        },
+      }
+    );
+
+    revalidatePath("/your-orders");
+    return {
+      success: true,
+      refund: {
+        id: refund.id,
+        amount: refund.amount,
+        status: refund.status,
+        currency: refund.currency,
+        created: refund.created,
+      },
+    };
+  } catch (error) {
+    console.error("Refund error:", error);
+    throw new Error(
+      "Refund failed. " + (error instanceof Error ? error.message : "")
+    );
   }
 }

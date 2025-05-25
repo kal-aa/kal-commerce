@@ -1,13 +1,14 @@
 "use client";
 
-import { removeOrderAction } from "@/app/actions";
+import { refundOrder, removeOrderAction } from "@/app/actions";
 import { OrderAlongWithProduct } from "@/app/types/types";
-import { useOptimistic } from "react";
+import { useOptimistic, useState } from "react";
 import OrdersForm from "./OrdersForm";
 import { formatTime, round } from "@/app/utils/reuses";
 import Image from "next/image";
 import Link from "next/link";
 import { useSWRConfig } from "swr";
+import { toast } from "react-toastify";
 
 export default function YourOrdersGenerate({
   orders,
@@ -17,6 +18,7 @@ export default function YourOrdersGenerate({
   isProcessingSection: boolean;
 }) {
   const [optimisticOrders, setOptimisticOrders] = useOptimistic(orders);
+  const [isRefundLoading, setIsRefundLoading] = useState(false);
   const { mutate } = useSWRConfig();
 
   const removeOrder = async (orderId: string, action: string) => {
@@ -40,8 +42,38 @@ export default function YourOrdersGenerate({
     }
   };
 
+  // Handle refund action
+  const handleCancel = async (orderId: string, isRefundable: boolean) => {
+    if (!isRefundable) {
+      alert("This order is not refundable.");
+      return;
+    }
+    setIsRefundLoading(true);
+
+    try {
+      const { success, refund } = await refundOrder(orderId);
+
+      if (success && refund) {
+        const amount = (refund.amount / 100).toFixed(2);
+        toast.success(
+          `${amount}-${refund.currency.toUpperCase()} refund successful!`
+        );
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Refund failed");
+    } finally {
+      setIsRefundLoading(false);
+    }
+  };
+
   return optimisticOrders.map((order) => {
     const imgPath = `${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`;
+
+    const REFUND_PERIOD_MS = 3 * 24 * 60 * 60 * 1000;
+    const paymentDate = new Date(order.paymentDate);
+    const refundDeadline = new Date(paymentDate.getTime() + REFUND_PERIOD_MS);
+
+    const isRefundable = new Date() < refundDeadline;
 
     return (
       <section
@@ -52,7 +84,7 @@ export default function YourOrdersGenerate({
           {isProcessingSection && (
             <div className="order-details-child bg-black text-white">
               Checked out: <br />
-              {formatTime(order.updatedAt)}
+              {formatTime(order.paymentDate)}
             </div>
           )}
           <div className="w-[80%]! order-details-child">
@@ -73,6 +105,25 @@ export default function YourOrdersGenerate({
           {/* Orders form */}
           {!isProcessingSection && (
             <OrdersForm removeOrder={removeOrder} order={order} />
+          )}
+          {isProcessingSection && isRefundable && (
+            <button
+              onClick={() => handleCancel(order.id, isRefundable)}
+              className={`underline text-red-800 hover:text-red-800 hover:underline-offset-2 ${isRefundLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+              disabled={isRefundLoading}
+            >
+              Refund batch-
+              <span className="font-sans">
+                {(() => {
+                  const d = new Date(order.paymentDate);
+                  return (
+                    String(d.getUTCDate()).slice(-1) +
+                    String(d.getUTCHours()).slice(-1) +
+                    String(d.getUTCMinutes()).slice(-1)
+                  );
+                })()}
+              </span>
+            </button>
           )}
         </div>
 

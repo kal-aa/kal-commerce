@@ -1,4 +1,4 @@
-//stripe listen --forward-to localhost:3000/app/api/stripe/webhook
+//stripe listen --forward-to localhost:3000/api/stripe/webhook
 import Stripe from "stripe";
 import { mongoDb } from "@/app/utils/mongodb";
 import { ObjectId } from "mongodb";
@@ -50,7 +50,9 @@ export async function POST(req: Request) {
       console.log("✅ PaymentIntent was successful!");
 
       try {
-        const orderIds = JSON.parse(paymentIntent.metadata.orderIds) as string;
+        const orderIds = JSON.parse(
+          paymentIntent.metadata.orderIds
+        ) as string[];
         const db = await mongoDb();
 
         for (const orderId of orderIds) {
@@ -59,12 +61,22 @@ export async function POST(req: Request) {
             .findOne({ _id: new ObjectId(orderId) });
 
           if (order) {
-            await db
-              .collection("orders")
-              .updateOne(
-                { _id: new ObjectId(orderId) },
-                { $set: { status: "Processing", updatedAt: new Date() } }
-              );
+            const charge = await stripe.charges.retrieve(
+              paymentIntent.latest_charge as string
+            );
+
+            await db.collection("orders").updateOne(
+              { _id: new ObjectId(orderId) },
+              {
+                $set: {
+                  status: "Processing",
+                  updatedAt: new Date(),
+                  paymentIntentId: paymentIntent.id,
+                  chargeId: charge.id,
+                  paymentDate: new Date(paymentIntent.created * 1000),
+                },
+              }
+            );
           } else {
             console.error(`Order with Id ${orderId} not found`);
           }
