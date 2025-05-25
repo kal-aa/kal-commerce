@@ -1,7 +1,7 @@
 "use client";
 
 import { changeStatusAction, removeOrderAction } from "@/app/actions";
-import { OrderAlongWithProduct } from "@/app/types/types";
+import { OrderAlongWithProduct, Status } from "@/app/types/types";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
@@ -22,7 +22,8 @@ export default function ManageOrdersForm({
   ) => {
     if (!optimisticOrder) return;
 
-    const newStatus = e.target.value;
+    const newStatus = e.target.value as Status;
+
     const updatedOrder = { ...order, status: newStatus };
     setOptimisticOrder(updatedOrder);
 

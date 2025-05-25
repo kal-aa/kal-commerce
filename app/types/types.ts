@@ -36,10 +36,11 @@ export interface EnhancedProduct extends Product {
   selectedQuantity: number;
 }
 
-export interface OrderAlongWithProduct extends Status {
+export interface OrderAlongWithProduct {
   id: string;
   productId: number;
   userId: string;
+  status: Status;
   price: number;
   for: string;
   type: string;
@@ -61,15 +62,14 @@ export interface Order {
   selectedQuantity: number;
 }
 
-export interface Status {
-  status: "Processing" | "Pending Checkout" | "Dispatched";
-}
+export type Status = "Processing" | "Pending Checkout" | "Dispatched";
 
 // type OmitOrder = Omit<Order, "orderId">;
-export interface EnhancedOrder extends Status {
+export interface EnhancedOrder {
   _id: ObjectId;
   userId: string;
   productId: number;
+  status: Status;
   selectedColor: string;
   selectedSize: string;
   selectedQuantity: number;
