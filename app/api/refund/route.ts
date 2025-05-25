@@ -1,4 +1,5 @@
 // Moved into a server action to keep the code clean
+export {}
 // import { mongoDb } from "@/app/utils/mongodb";
 // import { ObjectId } from "mongodb";
 // import { NextRequest, NextResponse } from "next/server";
