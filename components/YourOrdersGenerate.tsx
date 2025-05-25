@@ -4,7 +4,12 @@ import { refundOrder, removeOrderAction } from "@/app/actions";
 import { OrderAlongWithProduct } from "@/app/types/types";
 import { useOptimistic, useState } from "react";
 import OrdersForm from "./OrdersForm";
-import { formatTime, round } from "@/app/utils/reuses";
+import {
+  checkIsRefundable,
+  formatRefundBatchLabel,
+  formatTime,
+  round,
+} from "@/app/utils/reuses";
 import Image from "next/image";
 import Link from "next/link";
 import { useSWRConfig } from "swr";
@@ -69,18 +74,10 @@ export default function YourOrdersGenerate({
   return optimisticOrders.map((order) => {
     const imgPath = `${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`;
 
-    let isRefundable = false;
-    if (isProcessingSection && order.paymentDate) {
-      const paymentDate = new Date(order.paymentDate);
-      if (!isNaN(paymentDate.getTime())) {
-        const REFUND_PERIOD_MS = 3 * 24 * 60 * 60 * 1000;
-        const refundDeadline = new Date(
-          paymentDate.getTime() + REFUND_PERIOD_MS
-        );
-
-        isRefundable = new Date() < refundDeadline;
-      }
-    }
+    const isRefundable =
+      isProcessingSection &&
+      order.paymentDate &&
+      checkIsRefundable(order.paymentDate);
 
     return (
       <section
@@ -88,7 +85,7 @@ export default function YourOrdersGenerate({
         className="flex max-h-[250px] h-full rounded-2xl overflow-hidden shadow shadow-black/70 hover:shadow-md dark:hover:shadow-white/30"
       >
         <div className="order-details text-center relative">
-          {isProcessingSection && (
+          {isProcessingSection && order.paymentDate && (
             <div className="order-details-child bg-black text-white">
               Checked out: <br />
               {formatTime(order.paymentDate)}
@@ -123,14 +120,7 @@ export default function YourOrdersGenerate({
             >
               Refund batch-
               <span className="font-sans">
-                {(() => {
-                  const d = new Date(order.paymentDate);
-                  return (
-                    String(d.getUTCDate()).slice(-1) +
-                    String(d.getUTCHours()).slice(-1) +
-                    String(d.getUTCMinutes()).slice(-1)
-                  );
-                })()}
+                {order.paymentDate && formatRefundBatchLabel(order.paymentDate)}
               </span>
             </button>
           )}

@@ -49,7 +49,7 @@ export interface OrderAlongWithProduct {
   selectedQuantity: number;
   createdAt: Date;
   updatedAt: Date;
-  paymentDate: Date;
+  paymentDate?: Date;
   // paymentIntentId: string; //paymentIntent.id;
   // chargeId: string; //charge.id;
 }
@@ -75,7 +75,7 @@ export interface EnhancedOrder {
   selectedQuantity: number;
   createdAt: Date;
   updatedAt: Date;
-  paymentDate: Date; //new Date(paymentIntent.created * 1000);
+  paymentDate?: Date; //new Date(paymentIntent.created * 1000);
   // paymentIntentId: string; //paymentIntent.id;
   // chargeId: string; //charge.id;
 }

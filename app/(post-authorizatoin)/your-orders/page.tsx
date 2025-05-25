@@ -89,7 +89,7 @@ export default async function YourOrdersPage({
           updatedAt: o.updatedAt,
           // ...(o.paymentIntentId && { paymentIntentId: o.paymentIntentId }),
           // ...(o.chargeId && { chargeId: o.chargeId }),
-          ...(o.paymentDate && { paymentDate: o.paymentDate }),
+          ...(o.paymentDate && { paymentDate: new Date(o.paymentDate) }),
         };
       })
       .filter((order): order is OrderAlongWithProduct => order !== null);
