@@ -69,11 +69,18 @@ export default function YourOrdersGenerate({
   return optimisticOrders.map((order) => {
     const imgPath = `${order.for}/${order.type}/${order.selectedColor}-${order.type}.jpeg`;
 
-    const REFUND_PERIOD_MS = 3 * 24 * 60 * 60 * 1000;
-    const paymentDate = new Date(order.paymentDate);
-    const refundDeadline = new Date(paymentDate.getTime() + REFUND_PERIOD_MS);
+    let isRefundable = false;
+    if (isProcessingSection && order.paymentDate) {
+      const paymentDate = new Date(order.paymentDate);
+      if (!isNaN(paymentDate.getTime())) {
+        const REFUND_PERIOD_MS = 3 * 24 * 60 * 60 * 1000;
+        const refundDeadline = new Date(
+          paymentDate.getTime() + REFUND_PERIOD_MS
+        );
 
-    const isRefundable = new Date() < refundDeadline;
+        isRefundable = new Date() < refundDeadline;
+      }
+    }
 
     return (
       <section
@@ -109,7 +116,9 @@ export default function YourOrdersGenerate({
           {isProcessingSection && isRefundable && (
             <button
               onClick={() => handleCancel(order.id, isRefundable)}
-              className={`underline text-red-800 hover:text-red-800 hover:underline-offset-2 ${isRefundLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`underline text-red-800 hover:text-red-800 hover:underline-offset-2 ${
+                isRefundLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               disabled={isRefundLoading}
             >
               Refund batch-
