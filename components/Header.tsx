@@ -36,7 +36,7 @@ export default function Header() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const leftNav: Navlink[] = [
-    { name: "Home", href: `/` },
+    // { name: "Home", href: `/` },
     { name: "Shop", href: `/add-orders` },
     { name: "Orders", href: `/your-orders` },
   ];
@@ -65,7 +65,7 @@ export default function Header() {
       {/* Lef section of the header */}
       <div className="flex items-center ml-1">
         <div className="relative">
-          <Link href="/">
+          <Link href="/" title="Home">
             <Image
               width={100}
               height={0}

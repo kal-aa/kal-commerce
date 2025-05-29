@@ -23,6 +23,7 @@ export function formatRefundBatchLabel(date: Date): string {
   return (
     String(date.getUTCDate()).slice(-1) +
     String(date.getUTCHours()).slice(-1) +
-    String(date.getUTCMinutes()).slice(-1)
+    String(date.getUTCMinutes()).slice(-1) +
+    String(date.getSeconds()).slice(-1)
   );
 }

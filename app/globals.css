@@ -9,6 +9,10 @@ body {
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 button,
 a,
 select,
@@ -38,6 +42,18 @@ input {
 
 .intro-header {
   @apply font-bold px-10 py-5 mb-10 text-center text-yellow-700 rounded-2xl md:rounded-full dark:text-white/90;
+}
+
+.product-generator {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 -mx-8 sm:-mx-7 gap-y-10 gap-x-5;
+}
+
+.product-generator article {
+  @apply grid grid-cols-2 relative shadow-xs shadow-black/50 hover:shadow-sm rounded-3xl dark:border dark:border-white/50 dark:hover:border-white/80;
+}
+
+.quantity-select {
+  @apply outline-none cursor-pointer rounded-lg ml-2 bg-white/70 hover:bg-white/80 dark:bg-blue-600/70 dark:hover:bg-blue-600/90;
 }
 
 .submit-btn {
@@ -88,7 +104,11 @@ input {
 }
 
 .search-btn {
-  @apply bg-gray-200 -ml-1 py-2 pl-3 pr-4 md:pl-5 md:pr-6 rounded-r-xl cursor-pointer z-0;
+  @apply bg-gray-200 -ml-1 py-2 pl-3 pr-4 md:pl-5 md:pr-6 rounded-r-xl cursor-pointer z-0 hover:bg-gray-300;
+}
+
+.btn-pin {
+  @apply absolute rotate-45 -z-10 top-1/2 -translate-y-1/2 -right-3 size-10 bg-gray-200 group-hover:bg-gray-300 transition-colors duration-200 ease-in-out;
 }
 
 .make-admin-btns {

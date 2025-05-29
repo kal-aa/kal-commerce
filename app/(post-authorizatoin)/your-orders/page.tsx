@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import RequestPayement from "@/components/RequestPayement";
 import Pagination from "@/components/Pagination";
+import LazyCheckedOutOrders from "@/components/LazyCheckedOutOrders";
 
 export default async function YourOrdersPage({
   searchParams,
@@ -24,6 +25,7 @@ export default async function YourOrdersPage({
   const itemsPerPage = 10;
   const skipPending = (pagePending - 1) * itemsPerPage;
   const skipProcessing = (pageProcessing - 1) * itemsPerPage;
+
   // check when to disable the next btn in the pagination
   const totalOrders = async (status: string) =>
     await db.collection("orders").countDocuments({ userId, status });
@@ -31,6 +33,7 @@ export default async function YourOrdersPage({
   const totalProcessing = await totalOrders("Processing");
   const hasMorePending = pagePending * itemsPerPage < totalPending;
   const hasMoreProcessing = pageProcessing * itemsPerPage < totalProcessing;
+
   // how many pages left
   const totalPages = (totalItems: number) => {
     const divided = totalItems / itemsPerPage;
@@ -93,6 +96,7 @@ export default async function YourOrdersPage({
         };
       })
       .filter((order): order is OrderAlongWithProduct => order !== null);
+
   const mappedPendingCheckoutOrders = mapOrders(pendingCheckoutOrders);
   const mappedProcessingOrders = mapOrders(processingOrders);
 
@@ -125,7 +129,15 @@ export default async function YourOrdersPage({
         unless it constitutes 10% (0.1) of the total order value.
       </h1>
 
-      <div>
+      <div className="relative mb-10">
+        {mappedProcessingOrders.length > 0 && (
+          <Link
+            href="/your-orders#purchases"
+            className="absolute right-0 -top-7 search-btn rounded-full text-black"
+          >
+            ▼ You have Purchases
+          </Link>
+        )}
         {/* Request payement component */}
         <RequestPayement orders={mappedPendingCheckoutOrders} />
         {/* Orders pending checkout */}
@@ -151,38 +163,16 @@ export default async function YourOrdersPage({
         {}
       </div>
 
-      {/* orders In dispatch */}
+      {/* orders in Processing */}
       {mappedProcessingOrders.length > 0 && (
-        <div>
-          <br />
-          <hr />
-          <br />
-          <hr />
-          <br />
-          <div className="text-center col-span-5 bg-blue-700 py-3 text-white mb-5 mx-5 px-2">
-            <span className="font-bold">
-              Below is a list of your orders currently in dispatch.
-            </span>
-          </div>
-          <br />
-          <hr />
-          <br />
-          <hr />
-          <br />
-          <section className="order-section">
-            <YourOrdersGenerate
-              isProcessingSection={true}
-              orders={mappedProcessingOrders}
-            />
-          </section>
-          <Pagination
-            page={pageProcessing}
-            pageKey="pageProcessing"
-            hasMore={hasMoreProcessing}
-            totalPages={pagesProcessing}
-            baseUrl="your-orders"
-          />
-        </div>
+        <LazyCheckedOutOrders
+          {...{
+            mappedProcessingOrders,
+            pageProcessing,
+            pagesProcessing,
+            hasMoreProcessing,
+          }}
+        />
       )}
     </>
   );

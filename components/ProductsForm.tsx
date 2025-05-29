@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useOptimistic, useTransition } from "react";
+import React, { FormEvent, useOptimistic, useTransition } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
 import { ProductsFormProps } from "@/app/types/types";
@@ -9,11 +9,7 @@ import { submitProductAction } from "@/app/actions";
 import { useSWRConfig } from "swr";
 import { ClockLoader } from "react-spinners";
 
-export default function ProductsForm({
-  formHandlers,
-}: {
-  formHandlers: ProductsFormProps;
-}) {
+function ProductsForm(formHandlers: ProductsFormProps) {
   const {
     product,
     isAddOrdersPage,
@@ -60,7 +56,7 @@ export default function ProductsForm({
       <div className="row-span-3 grid grid-cols-3 px-2 sm:px-1 lg:px-2 gap-1 text-xs spacey border-white">
         <div className="col-span-2 space-y-2">
           {product.color.map((color, index) => (
-            <div key={index}>
+            <label key={index} className="block">
               <input
                 type="radio"
                 name={`color-${product.productId}`}
@@ -70,12 +66,12 @@ export default function ProductsForm({
                 className="mr-1 sm:mr-2 cursor-pointer"
               />
               {color.replace("-", " ")} <br />
-            </div>
+            </label>
           ))}
         </div>
         <div className="justify-self-center space-y-2">
           {product.size.map((size, index) => (
-            <div key={index}>
+            <label key={index} className="block">
               <input
                 type="radio"
                 name={`size-${product.productId}`}
@@ -85,15 +81,15 @@ export default function ProductsForm({
                 className="mr-1 sm:mr-2 cursor-pointer"
               />
               {size} <br />
-            </div>
+            </label>
           ))}
         </div>
       </div>
-      <div className=" text-center border-t p-1">
+      <label className=" text-center border-t p-1">
         Quantity:
         <select
           name={`quantity-${product.productId}`}
-          className="outline-none cursor-pointer rounded-lg ml-2 bg-white/70 hover:bg-white/80 dark:bg-blue-600/70 dark:hover:bg-blue-600/90"
+          className="quantity-select"
           onChange={(e) => handleQuantityChange(e, product.productId)}
         >
           {[...Array(10).keys()].map((_, index) => (
@@ -102,7 +98,7 @@ export default function ProductsForm({
             </option>
           ))}
         </select>
-      </div>
+      </label>
       {/* submit-btn */}
       <div className="text-center">
         {isAddOrdersPage ? (
@@ -138,3 +134,5 @@ export default function ProductsForm({
     </form>
   );
 }
+
+export default React.memo(ProductsForm);

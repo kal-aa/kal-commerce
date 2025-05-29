@@ -89,7 +89,20 @@ export interface PaginationProps {
 }
 
 // MainGenerate Props interface
-export interface MainGenerateProps {
+export interface ProductsGenerateProps {
   allProducts: EnhancedProduct[];
   isAddOrdersPage: boolean;
+}
+
+export interface checkedOrdersProps {
+  mappedProcessingOrders: OrderAlongWithProduct[];
+  pageProcessing: number;
+  pagesProcessing: number;
+  hasMoreProcessing: boolean;
+}
+
+export interface LazyButtonProps {
+  checked: boolean;
+  setChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  text?: "Testimonials" | "Purchases";
 }

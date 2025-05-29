@@ -16,12 +16,15 @@ const Pagination = ({
   const nextPage = page + 1;
 
   const handlePageChange = (newPage: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(pageKey, newPage.toString());
+
     if (baseUrl === "add-orders") {
-      const url = new URL(window.location.href);
-      url.searchParams.set(pageKey, newPage.toString());
       window.location.href = url.toString();
     } else {
-      router.push(`/${baseUrl}?${pageKey}=${newPage}`, { scroll: false });
+      router.push(`/${baseUrl}?${url.searchParams.toString()}`, {
+        scroll: false,
+      });
     }
   };
 

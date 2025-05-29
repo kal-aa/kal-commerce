@@ -29,7 +29,7 @@ export const ImageSlider = ({
   const settings = {
     dots: true,
     infinite: true, // Allow infinite scrolling
-    speed: 1500, // Speed of transition between slides (in milliseconds)
+    speed: 1000, // Speed of transition between slides (in milliseconds)
     autoplay: true, // Enable autoplay
     autoplaySpeed: 2500, // Delay between slide transitions (in milliseconds)
     pauseOnHover: true,

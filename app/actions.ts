@@ -11,10 +11,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 // Submit product action
 export async function submitProductAction(formData: FormData) {
   const db = await mongoDb();
+
   const productId = Number(formData.get("productId"));
   const selectedQuantity = Number(formData.get(`quantity-${productId}`));
   const selectedColor = formData.get(`color-${productId}`) as string;
   const selectedSize = formData.get(`size-${productId}`) as string;
+
   const { userId } = await auth();
   // first check if an order with the same shared values exist if so add the quantity to it
   const existingOrder = await db.collection("orders").findOne({
@@ -35,7 +37,7 @@ export async function submitProductAction(formData: FormData) {
     );
 
     if (response.acknowledged === true) {
-      revalidatePath("/your-orders");
+      // revalidatePath("/your-orders");
       return { success: true, message: "Order quantity updated" };
     }
     throw new Error("An error occured while updating Product");
@@ -54,7 +56,7 @@ export async function submitProductAction(formData: FormData) {
       updatedAt: new Date(),
     });
     if (result.acknowledged) {
-      revalidatePath("/your-orders");
+      // revalidatePath("/your-orders");
       return { success: true, message: "Item added to your Cart" };
     }
   } catch (error) {
@@ -181,6 +183,10 @@ export async function refundOrder(orderId: string) {
     });
 
     // status: "Processing" | "Pending Checkout" | "Dispatched";
+    const deleteCount = await db.collection("orders").countDocuments({
+      paymentIntentId,
+    });
+
     await db.collection("orders").updateMany(
       { paymentIntentId },
       {
@@ -202,6 +208,7 @@ export async function refundOrder(orderId: string) {
         currency: refund.currency,
         created: refund.created,
       },
+      deleteCount,
     };
   } catch (error) {
     console.error("Refund error:", error);
