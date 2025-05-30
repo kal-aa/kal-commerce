@@ -38,7 +38,8 @@ function OrdersPageView(data: OrdersPageViewProps) {
         <span className="text-black/60 dark:text-yellow-400/90 font-serif">
           3-day refund
         </span>{" "}
-        window from the delivery date. For orders over $250, shipping is{" "}
+        window starting from the date the order is placed. For orders over $250,
+        shipping is{" "}
         <span className="text-black/60 dark:text-yellow-400/90 font-serif">
           FREE
         </span>{" "}
