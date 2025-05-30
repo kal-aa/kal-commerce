@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { round } from "@/app/utils/reuses";
 import { OrderAlongWithProduct } from "@/app/types/types";
-import { useState } from "react";
 
-export default function RequestPayement({
+export default function RequestPayment({
   orders,
 }: {
   orders: OrderAlongWithProduct[];
@@ -20,14 +20,20 @@ export default function RequestPayement({
     { totalQuantity: 0, totalPrice: 0 }
   );
 
-  const baseShipping = 0.1;
+  // Shipping
+  const baseShipping = 0.1; // 10%
   const freeShippingThreshold = 250;
   const shippingCost =
     total.totalPrice > freeShippingThreshold
       ? 0
       : baseShipping * total.totalPrice;
 
-  const handleRequestPayement = async () => {
+  const handleRequestPayment = async () => {
+    if (orders.length === 0) {
+      setIsLoading(false);
+      return setError("No products available for payment");
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -38,10 +44,6 @@ export default function RequestPayement({
       selectedSize: order.selectedSize,
       selectedQuantity: order.selectedQuantity,
     }));
-    if (orders.length === 0) {
-      setIsLoading(false);
-      return setError("No products available for payment");
-    }
 
     try {
       const res = await fetch("/api/checkout", {
@@ -89,7 +91,7 @@ export default function RequestPayement({
       <button
         disabled={isLoading}
         type="submit"
-        onClick={handleRequestPayement}
+        onClick={handleRequestPayment}
         className={`remove-order-btn py-3! rounded-none! text-base! w-full ${
           isLoading ? "cursor-wait!" : ""
         }`}

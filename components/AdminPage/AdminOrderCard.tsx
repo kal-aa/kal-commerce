@@ -1,20 +1,28 @@
 "use client";
 
-import { changeStatusAction, removeOrderAction } from "@/app/actions";
-import { OrderAlongWithProduct, Status } from "@/app/types/types";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSWRConfig } from "swr";
+import { changeStatusAction, removeOrderAction } from "@/app/actions";
+import { updateQueryParam } from "@/app/utils/reuses";
+import {
+  AdminOrderCardProps,
+  OrderAlongWithProduct,
+  Status,
+} from "@/app/types/types";
 
-export default function ManageOrdersForm({
+export default function ManageOrderCard({
   order,
   userName,
-}: {
-  order: OrderAlongWithProduct;
-  userName: string;
-}) {
+  ordersOnPage,
+}: AdminOrderCardProps) {
   const { mutate } = useSWRConfig();
   const [optimisticOrder, setOptimisticOrder] =
     useState<OrderAlongWithProduct | null>(order);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const adminPage = Number(searchParams.get("adminPage")) || 1;
 
   // update status optimistically
   const handleStatusChange = async (
@@ -42,7 +50,21 @@ export default function ManageOrdersForm({
 
     try {
       const response = await removeOrderAction(order.id, "removeAll");
-      if (response?.success === true) mutate("/api/order-count");
+      if (response?.success === true) {
+        mutate("/api/order-count");
+
+        const remainingOrders = ordersOnPage.filter((o) => o.id !== order.id);
+
+        if (adminPage > 1 && remainingOrders.length === 0) {
+          updateQueryParam(
+            "adminPage",
+            String(adminPage - 1),
+            router,
+            searchParams,
+            "admin/manage-orders"
+          );
+        }
+      }
     } catch (error) {
       setOptimisticOrder(order);
       console.error("Failed to remove order:", error);

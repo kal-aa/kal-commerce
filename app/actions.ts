@@ -183,10 +183,6 @@ export async function refundOrder(orderId: string) {
     });
 
     // status: "Processing" | "Pending Checkout" | "Dispatched";
-    const deleteCount = await db.collection("orders").countDocuments({
-      paymentIntentId,
-    });
-
     await db.collection("orders").updateMany(
       { paymentIntentId },
       {
@@ -208,7 +204,7 @@ export async function refundOrder(orderId: string) {
         currency: refund.currency,
         created: refund.created,
       },
-      deleteCount,
+      paymentDate: order.paymentDate,
     };
   } catch (error) {
     console.error("Refund error:", error);

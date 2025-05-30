@@ -1,17 +1,13 @@
-import ProductsGenerate from "./ProductsGenerate";
+import { ProductsLogicHandlerProps, Product } from "@/app/types/types";
 import allProducts from "../app/data/products.json";
-import { Product } from "@/app/types/types";
+import ProductsList from "./ProductsList";
 import Pagination from "./Pagination";
 
-export default async function MainLogic({
+export default async function ProductsLogicHandler({
   isAddOrdersPage = false,
   query,
-  page,
-}: {
-  isAddOrdersPage: boolean;
-  query?: string;
-  page?: string;
-}) {
+  productsPage,
+}: ProductsLogicHandlerProps) {
   const filteredProducts = allProducts.products.filter((product) => {
     if (!query) return true;
     const queryLower = query?.toLowerCase();
@@ -24,7 +20,7 @@ export default async function MainLogic({
 
   // Pagination logic
   const itemsPerPage = 10;
-  const currentPage = parseInt(page || "1", 10);
+  const currentPage = parseInt(productsPage || "1", 10);
   const skip = (currentPage - 1) * itemsPerPage;
 
   const noMatchFound = query && filteredProducts.length === 0;
@@ -65,33 +61,34 @@ export default async function MainLogic({
         }`}
       >
         {isAddOrdersPage
-          ? ` This Website is Dedicated to Offering an Incredible E-Commerce
-                  Service for Apparel. Whether you're on the hunt for the latest
-                  trends, timeless classics, or comfortable everyday wear, our
-                  platform offers an intuitive and efficient way to discover the
-                  perfect pieces to elevate your wardrobe`
-          : ` What sets our offerings apart is the incredible variety we provide.
-                  Customers can choose from a tremendous palette of colors and a wide
-                  range of sizes to find the perfect fit for their style and needs.
-                  Whether you're looking for vibrant hues or classic shades, petite
-                  sizes or plus fits, our extensive selection ensures that there's
-                  something for everyone. We believe that personal expression is key,
-                  and our diverse options allow you to customize your purchases to
-                  reflect your unique taste. Dive into our collection and discover the
-                  endless possibilities that await! 🌈👚👖`}
+          ? `This Website is Dedicated to Offering an Incredible E-Commerce
+             Service for Apparel. Whether you're on the hunt for the latest
+             trends, timeless classics, or comfortable everyday wear, our
+             platform offers an intuitive and efficient way to discover the
+             perfect pieces to elevate your wardrobe`
+          : `What sets our offerings apart is the incredible variety we provide.
+             Customers can choose from a tremendous palette of colors and a wide
+             range of sizes to find the perfect fit for their style and needs.
+             Whether you're looking for vibrant hues or classic shades, petite
+             sizes or plus fits, our extensive selection ensures that there's
+             something for everyone. We believe that personal expression is key,
+             and our diverse options allow you to customize your purchases to
+             reflect your unique taste. Dive into our collection and discover the
+             endless possibilities that await! 🌈👚👖`}
       </h1>
-
-      <ProductsGenerate
+      {/* Component to Generate Products */}
+      <ProductsList
         allProducts={enhancedProducts}
         isAddOrdersPage={isAddOrdersPage}
       />
-
+      {/* Pagination */}
       {isAddOrdersPage && (
         <Pagination
           page={currentPage}
           hasMore={hasMore}
           totalPages={pagesCount}
           baseUrl="add-orders"
+          pageKey="productsPage"
         />
       )}
     </div>

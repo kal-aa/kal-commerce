@@ -29,7 +29,7 @@ input {
 }
 
 .header-links {
-  @apply px-2 py-0.5 rounded-lg leading-4 dark:text-blue-200;
+  @apply px-2 py-0.5 rounded-lg leading-4 font-normal dark:text-blue-200;
 }
 
 .footer-container {
@@ -77,6 +77,10 @@ input {
 
 .order-section {
   @apply px-5 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-10;
+}
+
+.order-card {
+  @apply flex max-h-[250px] rounded-2xl overflow-hidden shadow-xs shadow-black/50 hover:shadow-sm dark:border dark:border-white/60 dark:hover:border-white/80;
 }
 
 .order-details {

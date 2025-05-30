@@ -1,51 +1,33 @@
-import YourOrdersGenerate from "@/components/YourOrdersGenerate";
-import products from "../../data/products.json";
-import { EnhancedOrder, OrderAlongWithProduct } from "@/app/types/types";
-import { mongoDb } from "@/app/utils/mongodb";
 import { auth } from "@clerk/nextjs/server";
-import Link from "next/link";
-import RequestPayement from "@/components/RequestPayement";
-import Pagination from "@/components/Pagination";
-import LazyCheckedOutOrders from "@/components/LazyCheckedOutOrders";
+import products from "../../data/products.json";
+import { mongoDb } from "@/app/utils/mongodb";
+import { EnhancedOrder, OrderAlongWithProduct } from "@/app/types/types";
+import OrdersPageView from "@/components/YourOrdersPage/OrdersPageView";
 
 export default async function YourOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ pagePending?: string; pageProcessing?: string }>;
+  searchParams: Promise<{ pendingPage?: string; processingPage?: string }>;
 }) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized access: Missing userId");
   const db = await mongoDb();
 
+  // Extract page query params
   const params = await searchParams;
-  const pagePending = params.pagePending ? parseInt(params.pagePending, 10) : 1;
-  const pageProcessing = params.pageProcessing
-    ? parseInt(params.pageProcessing, 10)
+  const pendingPage = params.pendingPage ? parseInt(params.pendingPage, 10) : 1;
+  const processingPage = params.processingPage
+    ? parseInt(params.processingPage, 10)
     : 1;
+
+  // Skip feature
   const itemsPerPage = 10;
-  const skipPending = (pagePending - 1) * itemsPerPage;
-  const skipProcessing = (pageProcessing - 1) * itemsPerPage;
+  const pendingOffset = (pendingPage - 1) * itemsPerPage;
+  const processingOffset = (processingPage - 1) * itemsPerPage;
 
-  // check when to disable the next btn in the pagination
-  const totalOrders = async (status: string) =>
+  // Calculate when to disable & enable the next btn in the pagination
+  const countOrdersByStatus = async (status: string) =>
     await db.collection("orders").countDocuments({ userId, status });
-  const totalPending = await totalOrders("Pending Checkout");
-  const totalProcessing = await totalOrders("Processing");
-  const hasMorePending = pagePending * itemsPerPage < totalPending;
-  const hasMoreProcessing = pageProcessing * itemsPerPage < totalProcessing;
-
-  // how many pages left
-  const totalPages = (totalItems: number) => {
-    const divided = totalItems / itemsPerPage;
-    return totalItems % 10 === 0 ? divided : Math.floor(divided) + 1;
-  };
-  const pagesPending = totalPages(totalPending);
-  const pagesProcessing = totalPages(totalProcessing);
-
-  // Get the Orders from mongoDB
-  let pendingCheckoutOrders = [];
-  let processingOrders = [];
-  // helper function to fetch orders
   const fetchOrders = async (
     status: "Processing" | "Pending Checkout" | "Dispatched",
     skip: number
@@ -56,19 +38,24 @@ export default async function YourOrdersPage({
       .skip(skip)
       .limit(itemsPerPage)
       .toArray();
-  try {
-    pendingCheckoutOrders = await fetchOrders("Pending Checkout", skipPending);
-    processingOrders = await fetchOrders("Processing", skipProcessing);
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    return (
-      <div className="text-center bg-red-500 text-white p-5">
-        There was an error loading your orders. Please try again later.
-      </div>
-    );
-  }
 
-  // helper function to map the orders and get their equivalent products
+  // Run all the queries in parallel
+  const [totalPending, totalProcessing, pendingOrders, processingOrders] =
+    await Promise.all([
+      countOrdersByStatus("Pending Checkout"),
+      countOrdersByStatus("Processing"),
+      fetchOrders("Pending Checkout", pendingOffset),
+      fetchOrders("Processing", processingOffset),
+    ]);
+
+  const getTotalPages = (totalItems: number) =>
+    Math.ceil(totalItems / itemsPerPage);
+
+  const hasMorePending = pendingPage * itemsPerPage < totalPending;
+  const hasMoreProcessing = processingPage * itemsPerPage < totalProcessing;
+  const pagesPending = getTotalPages(totalPending);
+  const pagesProcessing = getTotalPages(totalProcessing);
+
   const mapOrders = (orders: EnhancedOrder[]): OrderAlongWithProduct[] =>
     orders
       .map((o) => {
@@ -97,83 +84,19 @@ export default async function YourOrdersPage({
       })
       .filter((order): order is OrderAlongWithProduct => order !== null);
 
-  const mappedPendingCheckoutOrders = mapOrders(pendingCheckoutOrders);
+  const mappedPendingOrders = mapOrders(pendingOrders);
   const mappedProcessingOrders = mapOrders(processingOrders);
 
-  // Helper function for the orders === 0
-  const EmptyOrderState = () => (
-    <div className="text-center col-span-5 bg-red-400 py-3 text-white mx-5">
-      <span className="font-bold">No order to checkout</span>, do you want to
-      <Link
-        href="/add-orders/"
-        className="text-blue-200 hover:text-blue-300 underline ml-1"
-      >
-        add some
-      </Link>
-    </div>
-  );
-
   return (
-    <>
-      <h1 className="add-orders-header">
-        Delivery dates depend on item availability and shipping method,
-        typically processed in 1-2 business days with delivery in 3-7 days. A
-        confirmation email will provide your estimated delivery date. We offer a{" "}
-        <span className="text-black/60 dark:text-yellow-400/90 font-serif">
-          3-day refund
-        </span>{" "}
-        window from the delivery date. For orders over $250, shipping is{" "}
-        <span className="text-black/60 dark:text-yellow-400/90 font-serif">
-          FREE
-        </span>{" "}
-        unless it constitutes 10% (0.1) of the total order value.
-      </h1>
-
-      <div className="relative mb-10">
-        {mappedProcessingOrders.length > 0 && (
-          <Link
-            href="/your-orders#purchases"
-            className="absolute right-0 -top-7 search-btn rounded-full text-black"
-          >
-            ▼ You have Purchases
-          </Link>
-        )}
-        {/* Request payement component */}
-        <RequestPayement orders={mappedPendingCheckoutOrders} />
-        {/* Orders pending checkout */}
-        {mappedPendingCheckoutOrders.length === 0 ? (
-          EmptyOrderState()
-        ) : (
-          <div>
-            <section className="order-section">
-              <YourOrdersGenerate
-                isProcessingSection={false}
-                orders={mappedPendingCheckoutOrders}
-              />
-            </section>
-            <Pagination
-              page={pagePending}
-              pageKey="pagePending"
-              hasMore={hasMorePending}
-              totalPages={pagesPending}
-              baseUrl="your-orders"
-            />
-          </div>
-        )}
-        {}
-      </div>
-
-      {/* orders in Processing */}
-      {mappedProcessingOrders.length > 0 && (
-        <LazyCheckedOutOrders
-          {...{
-            mappedProcessingOrders,
-            pageProcessing,
-            pagesProcessing,
-            hasMoreProcessing,
-          }}
-        />
-      )}
-    </>
+    <OrdersPageView
+      mappedPendingOrders={mappedPendingOrders}
+      mappedProcessingOrders={mappedProcessingOrders}
+      pendingPage={pendingPage}
+      pagesPending={pagesPending}
+      hasMorePending={hasMorePending}
+      processingPage={processingPage}
+      pagesProcessing={pagesProcessing}
+      hasMoreProcessing={hasMoreProcessing}
+    />
   );
 }

@@ -1,4 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
 // Round the No. in to two decimals
 export function round(num: number) {
@@ -26,4 +28,21 @@ export function formatRefundBatchLabel(date: Date): string {
     String(date.getUTCMinutes()).slice(-1) +
     String(date.getSeconds()).slice(-1)
   );
+}
+
+// Helper function to push query params
+export function updateQueryParam(
+  key: string,
+  value: string,
+  router: AppRouterInstance,
+  searchParams: ReadonlyURLSearchParams,
+  baseUrl: string = "your-orders"
+) {
+  const queries = new URLSearchParams(searchParams.toString());
+  if (value === "1") {
+    queries.delete(key);
+  } else {
+    queries.set(key, value);
+  }
+  router.replace(`/${baseUrl}?${queries.toString()}`);
 }

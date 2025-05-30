@@ -1,3 +1,5 @@
+"use client";
+
 import { LazyButtonProps } from "@/app/types/types";
 import React from "react";
 

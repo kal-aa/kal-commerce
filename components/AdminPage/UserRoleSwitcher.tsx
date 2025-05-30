@@ -1,15 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { User } from "@clerk/nextjs/server";
 import { removeRole, setRole } from "@/app/actions";
-import { useState } from "react";
 
-export default function OptimisticRole({
+export default function UserRoleSwitcher({
   user,
-  filterMainUser,
+  mainAdminUser,
 }: {
   user: User;
-  filterMainUser: User;
+  mainAdminUser: User;
 }) {
   const [optimisticUser, setOptimisticUser] = useState<Partial<User>>(user);
 
@@ -39,12 +39,12 @@ export default function OptimisticRole({
   return (
     <div className="w-1/2 flex flex-row-reverse sm:flex-row justify-between sm:items-center">
       <div className="dark:text-200 uppercase">
-        {filterMainUser?.id !== user.id
+        {mainAdminUser?.id !== user.id
           ? (optimisticUser.publicMetadata?.role as string) || "CLIENT"
           : ""}
       </div>
       <div>
-        {filterMainUser?.id === optimisticUser.id ? (
+        {mainAdminUser?.id === optimisticUser.id ? (
           <span className="mr-2">Main Admin</span>
         ) : (
           <div className="flex flex-col md:flex-row gap-2">

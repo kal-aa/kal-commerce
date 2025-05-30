@@ -1,11 +1,12 @@
 "use client";
 
 import React, { Suspense, useState } from "react";
-import LazyButton from "./LazyButton";
 import { MoonLoader } from "react-spinners";
-const CheckedOutOrders = React.lazy(() => import("./CheckedOutOrders"));
-import { checkedOrdersProps } from "@/app/types/types";
+import { ProcessingOrdersProps } from "@/app/types/types";
+const ProcessingOrders = React.lazy(() => import("./ProcessingOrders"));
+import LazyButton from "../LazyButton";
 
+// Helper function for the suspene fallback
 export function suspenseFallBack() {
   return (
     <div className="flex justify-center mt-5 text-black dark:text-white">
@@ -14,10 +15,10 @@ export function suspenseFallBack() {
   );
 }
 
-export default function LazyCheckedOutOrders(data: checkedOrdersProps) {
+function LazyProcessingOrders(data: ProcessingOrdersProps) {
   const {
     mappedProcessingOrders,
-    pageProcessing,
+    processingPage,
     pagesProcessing,
     hasMoreProcessing,
   } = data;
@@ -28,16 +29,16 @@ export default function LazyCheckedOutOrders(data: checkedOrdersProps) {
       <LazyButton {...{ checked, setChecked, text: "Purchases" }} />
       {checked && (
         <Suspense fallback={suspenseFallBack()}>
-          <CheckedOutOrders
-            {...{
-              mappedProcessingOrders,
-              pageProcessing,
-              pagesProcessing,
-              hasMoreProcessing,
-            }}
+          <ProcessingOrders
+            mappedProcessingOrders={mappedProcessingOrders}
+            processingPage={processingPage}
+            pagesProcessing={pagesProcessing}
+            hasMoreProcessing={hasMoreProcessing}
           />
         </Suspense>
       )}
     </div>
   );
 }
+
+export default LazyProcessingOrders;

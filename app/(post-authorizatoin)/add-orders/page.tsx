@@ -1,10 +1,16 @@
-import MainLogic from "@/components/MainLogic";
+import ProductsLogicHandler from "@/components/ProductsLogicHandler";
 
 export default async function AddOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; page?: string }>;
+  searchParams: Promise<{ query?: string; productsPage?: string }>;
 }) {
-  const { query, page } = await searchParams;
-  return <MainLogic isAddOrdersPage={true} query={query} page={page} />;
+  const { query, productsPage } = await searchParams;
+  return (
+    <ProductsLogicHandler
+      isAddOrdersPage={true}
+      query={query}
+      productsPage={productsPage}
+    />
+  );
 }

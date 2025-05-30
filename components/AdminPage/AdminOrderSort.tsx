@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function AdminSortOrders() {
+export default function AdminOrderSort() {
   const [sortBy, setSortBy] = useState("date-descending");
   const router = useRouter();
 

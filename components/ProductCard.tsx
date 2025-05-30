@@ -4,12 +4,12 @@ import Link from "next/link";
 import React, { FormEvent, useOptimistic, useTransition } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
-import { ProductsFormProps } from "@/app/types/types";
+import { ProductCardProps } from "@/app/types/types";
 import { submitProductAction } from "@/app/actions";
 import { useSWRConfig } from "swr";
 import { ClockLoader } from "react-spinners";
 
-function ProductsForm(formHandlers: ProductsFormProps) {
+function ProductCard(formHandlers: ProductCardProps) {
   const {
     product,
     isAddOrdersPage,
@@ -135,4 +135,4 @@ function ProductsForm(formHandlers: ProductsFormProps) {
   );
 }
 
-export default React.memo(ProductsForm);
+export default React.memo(ProductCard);

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import testimonialsData from "../app/data/testimonials.json";
+import testimonialsData from "../../app/data/testimonials.json";
 import { Testimony } from "@/app/types/types";
 import Link from "next/link";
 

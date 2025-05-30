@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { TiDelete } from "react-icons/ti";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 export default function ImagePageIntercept() {
   const router = useRouter();

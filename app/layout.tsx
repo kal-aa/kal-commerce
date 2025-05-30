@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { Playfair_Display } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ToastNotification from "@/components/ToastNotification";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "kal-commerce", template: "%s | kal-commerce" },

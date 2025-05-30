@@ -1,9 +1,9 @@
 "use client";
 
 import React, { Suspense, useState } from "react";
-import LazyButton from "./LazyButton";
-import { suspenseFallBack } from "./LazyCheckedOutOrders";
-const Testimonial = React.lazy(() => import("@/components/Testimonial"));
+import LazyButton from "../LazyButton";
+import { suspenseFallBack } from "../YourOrdersPage/LazyProcessingOrders";
+const Testimonial = React.lazy(() => import("@/components/HomePage/Testimonial"));
 
 export default function LazyTestimonial() {
   const [checked, setChecked] = useState(false);

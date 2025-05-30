@@ -1,6 +1,5 @@
-// import { removeRole, setRole } from "@/app/actions";
-import OptimisticRole from "@/components/OptimisticRole";
 import { clerkClient, User } from "@clerk/nextjs/server";
+import UserRoleSwitcher from "@/components/AdminPage/UserRoleSwitcher";
 
 export default async function AdminPage() {
   const client = await clerkClient();
@@ -15,8 +14,8 @@ export default async function AdminPage() {
   }
 
   // make the btns to be unable to change the role of the main admin
-  const mainUserEmail = "sadkalshayee@gmail.com";
-  const filterMainUser = users.find((user) =>
+  const mainUserEmail = process.env.MAIN_ADMIN_ID;
+  const mainAdminUser = users.find((user) =>
     user.emailAddresses.some((email) => email.emailAddress === mainUserEmail)
   )!;
 
@@ -47,9 +46,9 @@ export default async function AdminPage() {
             </div>
           </div>
 
-          <OptimisticRole
+          <UserRoleSwitcher
             user={JSON.parse(JSON.stringify(user))}
-            filterMainUser={JSON.parse(JSON.stringify(filterMainUser))}
+            mainAdminUser={JSON.parse(JSON.stringify(mainAdminUser))}
           />
         </div>
       ))}

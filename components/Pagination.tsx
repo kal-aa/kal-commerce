@@ -1,8 +1,9 @@
 "use client";
 
-import { PaginationProps } from "@/app/types/types";
-import { useRouter } from "next/navigation";
+import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { PaginationProps } from "@/app/types/types";
 
 const Pagination = ({
   page,
@@ -17,7 +18,11 @@ const Pagination = ({
 
   const handlePageChange = (newPage: number) => {
     const url = new URL(window.location.href);
-    url.searchParams.set(pageKey, newPage.toString());
+    if (newPage === 1) {
+      url.searchParams.delete(pageKey);
+    } else {
+      url.searchParams.set(pageKey, newPage.toString());
+    }
 
     if (baseUrl === "add-orders") {
       window.location.href = url.toString();
@@ -45,7 +50,7 @@ const Pagination = ({
         </button>
       )}
 
-      {/* Current Page */}
+      {/* Current Page i.e:(3/5)*/}
       <span className="text-lg font-medium text-gray-800 dark:text-gray-400">
         Page {page}/{totalPages}
       </span>
@@ -68,4 +73,4 @@ const Pagination = ({
   );
 };
 
-export default Pagination;
+export default React.memo(Pagination);

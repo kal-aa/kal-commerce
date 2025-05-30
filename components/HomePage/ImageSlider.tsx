@@ -6,12 +6,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import React from "react";
 
-export const ImageSlider = ({
-  isAddOrdersPage,
-}: {
-  isAddOrdersPage: boolean;
-}) => {
+function ImageSlider({ isAddOrdersPage }: { isAddOrdersPage: boolean }) {
   const { isLoaded, userId } = useAuth();
 
   let images: string[] = [];
@@ -58,4 +55,6 @@ export const ImageSlider = ({
       </div>
     )
   );
-};
+}
+
+export default React.memo(ImageSlider);

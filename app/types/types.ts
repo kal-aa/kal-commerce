@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 export type Navlink = { name: string; href: string };
 export type Testimony = { id: number; name: string; testimony: string };
 
-export interface ProductsFormProps {
+export interface ProductCardProps {
   product: EnhancedProduct;
   isAddOrdersPage: boolean;
   handleColorChange: (
@@ -18,6 +18,11 @@ export interface ProductsFormProps {
     e: React.ChangeEvent<HTMLSelectElement>,
     productId: number
   ) => void;
+}
+export interface ProductsLogicHandlerProps {
+  isAddOrdersPage: boolean;
+  query?: string;
+  productsPage?: string;
 }
 
 // Define the `Product` type (if not already defined)
@@ -89,20 +94,45 @@ export interface PaginationProps {
 }
 
 // MainGenerate Props interface
-export interface ProductsGenerateProps {
+export interface ProductsListProps {
   allProducts: EnhancedProduct[];
   isAddOrdersPage: boolean;
-}
-
-export interface checkedOrdersProps {
-  mappedProcessingOrders: OrderAlongWithProduct[];
-  pageProcessing: number;
-  pagesProcessing: number;
-  hasMoreProcessing: boolean;
 }
 
 export interface LazyButtonProps {
   checked: boolean;
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
   text?: "Testimonials" | "Purchases";
+}
+
+export interface OrderCardProps {
+  order: OrderAlongWithProduct;
+  isProcessingSection: boolean;
+  loadingId: string | null;
+  handleCancel: (orderId: string, isRefundable: boolean) => void;
+  removeOrder: (orderId: string, action: string) => void;
+}
+
+export interface ProcessingOrdersProps {
+  mappedProcessingOrders: OrderAlongWithProduct[];
+  processingPage: number;
+  pagesProcessing: number;
+  hasMoreProcessing: boolean;
+}
+
+export interface PendingOrdersProps {
+  mappedPendingOrders: OrderAlongWithProduct[];
+  pagesPending: number;
+  pendingPage: number;
+  hasMorePending: boolean;
+}
+
+export interface OrdersPageViewProps
+  extends ProcessingOrdersProps,
+    PendingOrdersProps {}
+
+export interface AdminOrderCardProps {
+  order: OrderAlongWithProduct;
+  userName: string;
+  ordersOnPage: OrderAlongWithProduct[];
 }

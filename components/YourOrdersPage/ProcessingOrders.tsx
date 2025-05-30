@@ -1,12 +1,13 @@
-import React from "react";
-import YourOrdersGenerate from "./YourOrdersGenerate";
-import Pagination from "./Pagination";
-import { checkedOrdersProps } from "@/app/types/types";
+"use client";
 
-export default function CheckedOutOrders(data: checkedOrdersProps) {
+import { ProcessingOrdersProps } from "@/app/types/types";
+import OrderActions from "./OrderActions";
+import Pagination from "../Pagination";
+
+function ProcessingOrders(data: ProcessingOrdersProps) {
   const {
     mappedProcessingOrders,
-    pageProcessing,
+    processingPage,
     pagesProcessing,
     hasMoreProcessing,
   } = data;
@@ -26,14 +27,14 @@ export default function CheckedOutOrders(data: checkedOrdersProps) {
       <hr />
       <br />
       <section className="order-section">
-        <YourOrdersGenerate
+        <OrderActions
           isProcessingSection={true}
           orders={mappedProcessingOrders}
         />
       </section>
       <Pagination
-        page={pageProcessing}
-        pageKey="pageProcessing"
+        page={processingPage}
+        pageKey="processingPage"
         hasMore={hasMoreProcessing}
         totalPages={pagesProcessing}
         baseUrl="your-orders"
@@ -41,3 +42,5 @@ export default function CheckedOutOrders(data: checkedOrdersProps) {
     </div>
   );
 }
+
+export default ProcessingOrders;

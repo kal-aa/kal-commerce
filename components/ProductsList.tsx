@@ -1,17 +1,14 @@
 "use client";
 
-import { ProductsGenerateProps } from "@/app/types/types";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { ChangeEvent, useCallback, useState } from "react";
-import { ImageSlider } from "./ImageSlider";
-import ProductsForm from "./ProductsForm";
 import { useAuth } from "@clerk/nextjs";
+import { EnhancedProduct, ProductsListProps } from "@/app/types/types";
+import ImageSlider from "./HomePage/ImageSlider";
+import ProductCard from "./ProductCard";
 
-function ProductsGenerate({
-  allProducts,
-  isAddOrdersPage,
-}: ProductsGenerateProps) {
+function ProductsList({ allProducts, isAddOrdersPage }: ProductsListProps) {
   const [products, setProducts] = useState(allProducts);
   const { userId } = useAuth();
 
@@ -57,6 +54,9 @@ function ProductsGenerate({
     []
   );
 
+  const getProductImgUrl = (product: EnhancedProduct) =>
+    `${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`;
+
   return (
     <div className="px-10 py-5">
       {/* Carousel */}
@@ -65,20 +65,18 @@ function ProductsGenerate({
       <main className="product-generator">
         {products.map((product) => (
           <article key={product.productId} className="">
-            <Link
-              href={`/images?imgUrl=${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
-            >
+            <Link href={`/images?imgUrl=${getProductImgUrl(product)}`}>
               <Image
                 width={400}
                 height={0}
-                src={`/images/${product.for}/${product.type}/${product.selectedColor}-${product.type}.jpeg`}
+                src={`/images/${getProductImgUrl(product)}`}
                 alt={`${product.for + "'s " + product.type}.jpeg `}
                 className="w-full h-full max-h-52 brightness-95 rounded-l-[24px] object-cover"
               />
             </Link>
 
-            {/* Products Form Component */}
-            <ProductsForm
+            {/* Product card Component */}
+            <ProductCard
               product={product}
               isAddOrdersPage={isAddOrdersPage}
               handleColorChange={handleColorChange}
@@ -105,4 +103,4 @@ function ProductsGenerate({
   );
 }
 
-export default ProductsGenerate;
+export default ProductsList;
